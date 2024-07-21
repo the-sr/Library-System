@@ -21,7 +21,6 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
-    private final PasswordEncoder passwordEncoder;
     private final AddressService addressService;
 
     @Override
@@ -36,7 +35,7 @@ public class UserServiceImpl implements UserService {
                 .middleName(userReq.getMiddleName().trim())
                 .lastName(userReq.getLastName().trim())
                 .email(userReq.getEmail().trim())
-                .password(passwordEncoder.encode(userReq.getPassword()))
+                .password(userReq.getPassword())
                 .phone(userReq.getPhone().trim())
                 .build();
         userRepo.save(user);

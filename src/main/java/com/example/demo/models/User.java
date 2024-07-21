@@ -32,6 +32,12 @@ public class User {
     @Column(name="password")
     private String password;
 
+    @Column(name="is_admin")
+    private boolean isAdmin;
+
+    @Column(name="is_librarian")
+    private boolean isLibrarian;
+
     @Column(name="phone")
     private String phone;
 
@@ -40,6 +46,7 @@ public class User {
 
     @Column(name="is_active")
     private boolean isActive;
+
 
     @PrePersist
     private void prePersist() {
