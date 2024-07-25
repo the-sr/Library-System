@@ -1,5 +1,6 @@
 package com.example.demo.models;
 
+import com.example.demo.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,35 +15,32 @@ import java.util.List;
 @Table(name="users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "first_name")
+    @Column(name = "first_name",nullable = false)
     private String firstName;
 
     @Column(name = "middle_name")
     private String middleName;
 
-    @Column(name="last_name")
+    @Column(name="last_name",nullable = false)
     private String lastName;
 
-    @Column(name="email")
+    @Column(name="email",unique = true,nullable = false)
     private String email;
 
-    @Column(name="password")
+    @Column(name="password",nullable = false)
     private String password;
 
-    @Column(name="is_admin")
-    private boolean isAdmin;
-
-    @Column(name="is_librarian")
-    private boolean isLibrarian;
+    @Enumerated(EnumType.STRING)
+    @Column(name="role")
+    private Role role;
 
     @Column(name="phone")
     private String phone;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    private List<Address> address;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Address> addresses;
 
     @Column(name="is_active")
     private boolean isActive;

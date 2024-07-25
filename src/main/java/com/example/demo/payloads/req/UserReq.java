@@ -1,10 +1,10 @@
 package com.example.demo.payloads.req;
 
+import com.example.demo.enums.Role;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
 
@@ -25,11 +25,12 @@ public class UserReq {
     @Email(message = "Invalid Email.")
     private String email;
 
-    @Min(value = 5,message = "Password length must be greater than five. ")
-    @Max(value = 15,message = "Password length must be less than fifteen.")
+    @Length(min = 5,max = 15,message = "Password must be 5 to 15 character long")
     private String password;
 
     private String confirmPassword;
+
+    private Role role;
 
     private String phone;
 

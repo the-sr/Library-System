@@ -23,4 +23,5 @@ public class AddressReq {
     private String zip;
     @NotNull(message = "Country is required.")
     private String country;
+    private boolean isPerTemp;
 }

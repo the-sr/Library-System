@@ -11,6 +11,6 @@ public interface BookRepo extends JpaRepository<Book, Long> {
     @Query(value = "Select coalesce(max(id),0)+1 from book ",nativeQuery = true)
     long findNextId();
 
-    List<Book> findByAuthor(String author);
+    boolean existsByIsbn(String isbn);
 
 }

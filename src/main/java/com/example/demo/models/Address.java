@@ -13,12 +13,14 @@ import lombok.*;
 @Table(name="address")
 public class Address {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AddressType addressType;
+
+    @Column(name="is_per_temp_same")
+    private boolean isPerTempSame;
 
     @Column(name = "street")
     private String street;

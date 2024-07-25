@@ -3,7 +3,7 @@ package com.example.demo.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -13,13 +13,12 @@ import java.util.List;
 @Entity
 public class Book {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="isbn")
+    @Column(name="isbn",unique = true,nullable = false)
     private String isbn;
 
-    @Column(name = "title")
+    @Column(name = "title",nullable = false)
     private String title;
 
     @Column(name="edition")
@@ -31,7 +30,7 @@ public class Book {
     @Column(name="book_count")
     private int bookCount;
 
-    @ManyToMany(mappedBy = "books")
-    private List<Author> authors;
+    @ManyToMany(mappedBy = "books",cascade = CascadeType.ALL)
+    private Set<Author> authors;
 
 }
