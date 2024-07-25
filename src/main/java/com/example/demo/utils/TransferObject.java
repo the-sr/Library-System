@@ -17,7 +17,7 @@ public class TransferObject {
     public static<T,D> List<T> convert(List<D> objects, Class<T> toClass) {
         List<T> objectsList = new ArrayList<>();
         objects.forEach(obj-> {
-            Optional.ofNullable(obj).map(o->objectsList.add(modelMapper.map(o,toClass))).orElse(objectsList.add(null));
+            objectsList.add(Optional.ofNullable(obj).map(o->modelMapper.map(o,toClass)).orElse(null));
         });
         return objectsList;
     }

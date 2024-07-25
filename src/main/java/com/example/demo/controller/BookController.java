@@ -14,7 +14,7 @@ public class BookController {
         return null;
     }
 
-    @GetMapping("/book/:id")
+    @GetMapping("/book/{id}")
     public ResponseEntity<?> getBookById(@PathVariable("id") String id){
         return null;
     }
@@ -31,6 +31,11 @@ public class BookController {
 
     @DeleteMapping("/book/:id")
     public ResponseEntity<?> deleteBook(@PathVariable("id") String id){
+        return null;
+    }
+
+    @GetMapping("/books")
+    public ResponseEntity<?> getAllBooks(){
         return null;
     }
 }

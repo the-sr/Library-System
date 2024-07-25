@@ -6,6 +6,7 @@ import com.example.demo.models.Book;
 import com.example.demo.payloads.req.BookReq;
 import com.example.demo.payloads.res.BookRes;
 import com.example.demo.repository.BookRepo;
+import com.example.demo.services.AuthorService;
 import com.example.demo.services.BookService;
 import com.example.demo.utils.TransferObject;
 import lombok.AllArgsConstructor;
@@ -20,39 +21,35 @@ import java.util.Optional;
 public class BookServiceImpl implements BookService {
 
     private final BookRepo bookRepo;
+    private final AuthorService authorService;
 
     @Override
-    public void saveBook(BookReq bookReq) {
-        Book book =Book.builder()
+    public BookRes saveBook(BookReq bookReq) {
+        if(bookRepo.existsByIsbn(bookReq.getIsbn()))
+            throw new CustomException("Book with ISBN already exists", HttpStatus.CONFLICT);
+        Book book=Book.builder()
                 .id(bookRepo.findNextId())
                 .isbn(bookReq.getIsbn())
                 .title(bookReq.getTitle())
                 .edition(bookReq.getEdition())
-                .authors(TransferObject.convert(bookReq.getAuthors(), Author.class))
                 .publisher(bookReq.getPublisher())
                 .bookCount(bookReq.getBookCount())
                 .build();
         bookRepo.save(book);
-
+        bookReq.getAuthors().forEach(author->{
+            authorService.addAuthor(author, book.getId());
+        });
+        return getBookById(book.getId());
     }
 
     @Override
     public BookRes getBookById(Long id) {
-        Optional<Book> book = bookRepo.findById(id);
-        if(book.isEmpty()) throw new CustomException("Book Not Found", HttpStatus.NOT_FOUND);
-        return TransferObject.convert(book.get(), BookRes.class);
+        return null;
     }
 
     @Override
     public List<BookRes> getAllBooks() {
-        List<Book> books = bookRepo.findAll();
-        return TransferObject.convert(books, BookRes.class);
-    }
-
-    @Override
-    public List<BookRes> getBookByAuthor(String author) {
-        List<Book> books=bookRepo.findByAuthor(author);
-        return TransferObject.convert(books, BookRes.class);
+        return null;
     }
 
     @Override

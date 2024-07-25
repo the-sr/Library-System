@@ -1,10 +1,13 @@
 package com.example.demo.services.impl;
 
+import com.example.demo.payloads.req.ResetPassReq;
 import com.example.demo.payloads.req.UserReq;
 import com.example.demo.exception.CustomException;
 import com.example.demo.models.User;
+import com.example.demo.payloads.res.AddressRes;
 import com.example.demo.payloads.res.UserRes;
 import com.example.demo.projection.UserProjection;
+import com.example.demo.repository.AddressRepo;
 import com.example.demo.repository.UserRepo;
 import com.example.demo.services.AddressService;
 import com.example.demo.services.UserService;
@@ -14,6 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -22,6 +28,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
     private final AddressService addressService;
+    private final AddressRepo addressRepo;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserRes save(UserReq userReq) {
@@ -32,10 +40,11 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .id(userRepo.findNextId())
                 .firstName(userReq.getFirstName().trim())
-                .middleName(userReq.getMiddleName().trim())
+                .middleName(userReq.getMiddleName())
                 .lastName(userReq.getLastName().trim())
                 .email(userReq.getEmail().trim())
-                .password(userReq.getPassword())
+                .password(passwordEncoder.encode(userReq.getPassword()))
+                .role(userReq.getRole())
                 .phone(userReq.getPhone().trim())
                 .build();
         userRepo.save(user);
@@ -47,10 +56,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRes findById(long id) {
-        Optional<UserProjection> user = userRepo.findById(id);
+        Optional<User> user = userRepo.findById(id);
         if (user.isEmpty()) throw new CustomException("User not found", HttpStatus.NOT_FOUND);
         UserRes res= TransferObject.convert(user.get(), UserRes.class);
-        res.setAddress(addressService.getAddressByUserId(user.get().getId()));
+        res.setAddress(TransferObject.convert(addressRepo.findByUserId(user.get().getId()), AddressRes.class));
         return res;
     }
 
@@ -62,4 +71,51 @@ public class UserServiceImpl implements UserService {
         res.setAddress(addressService.getAddressByUserId(user.get().getId()));
         return res;
     }
+
+    @Override
+    public String resetPassword(ResetPassReq passReq) {
+
+        long userId=2 ;//get logged in user id
+
+        Optional<User> user=userRepo.findById(userId);
+        if(user.isEmpty()) throw new CustomException("User not found", HttpStatus.NOT_FOUND);
+        if(passReq.getOldPassword().equals(user.get().getPassword()))
+            user.get().setPassword(passReq.getNewPassword());
+        else throw new CustomException("Old password is not correct", HttpStatus.BAD_REQUEST);
+        return "Password changed successfully";
+    }
+
+    @Override
+    public UserRes updateById(long id,UserReq userReq) {
+        User user=userRepo.findById(id).get();
+        user.setFirstName(userReq.getFirstName().trim());
+        user.setMiddleName(userReq.getMiddleName().trim());
+        user.setLastName(userReq.getLastName().trim());
+        user.setEmail(userReq.getEmail().trim());
+        user.setPhone(userReq.getPhone().trim());
+        userRepo.save(user);
+        return findById(user.getId());
+    }
+
+    @Override
+    public String deleteById(long id) {
+        Optional<User> user=userRepo.findById(id);
+        if(user.isEmpty()) throw new CustomException("User not found", HttpStatus.NOT_FOUND);
+        user.get().setActive(false);
+        userRepo.save(user.get());
+        return "User Deleted Successfully";
+    }
+
+    @Override
+    public List<UserRes> getAllUsers() {
+        List<User> users = userRepo.findAll();
+        List<UserRes> res = new ArrayList<>();
+        users.forEach(user->{
+            UserRes userRes = TransferObject.convert(user, UserRes.class);
+            userRes.setAddress(TransferObject.convert(addressRepo.findByUserId(user.getId()), AddressRes.class));
+            res.add(userRes);
+        });
+        return res;
+    }
+
 }
