@@ -30,7 +30,12 @@ public class Book {
     @Column(name="book_count")
     private int bookCount;
 
-    @ManyToMany(mappedBy = "books",cascade = CascadeType.ALL)
+    @ManyToMany
+    @JoinTable(
+            name = "book_author",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name="author_id")
+    )
     private Set<Author> authors;
 
 }
