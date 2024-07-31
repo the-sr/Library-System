@@ -3,6 +3,7 @@ package com.example.demo.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -37,5 +38,13 @@ public class Book {
             inverseJoinColumns = @JoinColumn(name="author_id")
     )
     private Set<Author> authors;
+
+    @ManyToMany
+    @JoinTable(
+            name = "book_genre",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name="genre_id")
+    )
+    private List<Genre> genre;
 
 }

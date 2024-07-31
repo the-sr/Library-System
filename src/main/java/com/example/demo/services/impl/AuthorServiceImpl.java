@@ -22,8 +22,8 @@ public class AuthorServiceImpl implements AuthorService {
     public Author addAuthor(AuthorReq authorReq) {
         Author author = Author.builder()
                 .id(authorRepo.findNextId())
-                .firstName(authorReq.getFirstName())
-                .lastName(authorReq.getLastName())
+                .firstName(authorReq.getFirstname())
+                .lastName(authorReq.getLastname())
                 .email(authorReq.getEmail())
                 .phone(authorReq.getPhone())
                 .build();

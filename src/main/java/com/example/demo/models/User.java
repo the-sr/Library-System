@@ -45,7 +45,6 @@ public class User {
     @Column(name="is_active")
     private boolean isActive;
 
-
     @PrePersist
     private void prePersist() {
         isActive = true;

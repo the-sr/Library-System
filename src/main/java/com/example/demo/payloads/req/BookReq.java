@@ -1,9 +1,11 @@
 package com.example.demo.payloads.req;
 
+import com.example.demo.models.Genre;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -23,4 +25,6 @@ public class BookReq {
     private int bookCount;
     @NotNull(message = "Author Details is required")
     private Set<AuthorReq> authors;
+    @NotNull(message = "At least 1 genre is required")
+    private List<GenreReq> genre;
 }
