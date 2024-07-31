@@ -1,7 +1,6 @@
 package com.example.demo.exception;
 
 import lombok.*;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
@@ -10,5 +9,5 @@ import org.springframework.http.HttpStatus;
 @Builder
 public class ErrorMessage {
     private String message;
-    private HttpStatus statusCode;
+    private int statusCode;
 }

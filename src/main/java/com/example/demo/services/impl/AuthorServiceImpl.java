@@ -4,6 +4,7 @@ import com.example.demo.models.Author;
 import com.example.demo.models.Book;
 import com.example.demo.payloads.req.AuthorReq;
 import com.example.demo.payloads.res.AuthorRes;
+import com.example.demo.repository.AuthorRepo;
 import com.example.demo.repository.BookRepo;
 import com.example.demo.services.AuthorService;
 import lombok.AllArgsConstructor;
@@ -15,17 +16,17 @@ import java.util.Set;
 @AllArgsConstructor
 public class AuthorServiceImpl implements AuthorService {
 
-    private final BookRepo bookRepo;
+    private final AuthorRepo authorRepo;
 
     @Override
-    public AuthorRes addAuthor(AuthorReq authorReq, long bookId) {
+    public Author addAuthor(AuthorReq authorReq) {
         Author author = Author.builder()
+                .id(authorRepo.findNextId())
                 .firstName(authorReq.getFirstName())
                 .lastName(authorReq.getLastName())
                 .email(authorReq.getEmail())
                 .phone(authorReq.getPhone())
-                .books((Set<Book>) bookRepo.findById(bookId).get())
                 .build();
-        return null;
+        return authorRepo.save(author);
     }
 }

@@ -14,15 +14,15 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class UserReq {
-    @NotBlank(message = "First name cannot be blank.")
+    @NotBlank(message = "First name cannot be blank")
     private String firstName;
 
     private String middleName;
 
-    @NotBlank(message = "Last name cannot be blank.")
+    @NotBlank(message = "Last name cannot be blank")
     private String lastName;
 
-    @Email(message = "Invalid Email.")
+    @Email(message = "Invalid Email")
     private String email;
 
     @Length(min = 5,max = 15,message = "Password must be 5 to 15 character long")

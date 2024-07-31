@@ -28,11 +28,6 @@ public class Author {
     @Column(name = "phone")
     private String phone;
 
-    @ManyToMany
-    @JoinTable(
-            name = "book_author",
-            joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name="author_id")
-    )
+    @ManyToMany(mappedBy = "authors")
     private Set<Book> books;
 }

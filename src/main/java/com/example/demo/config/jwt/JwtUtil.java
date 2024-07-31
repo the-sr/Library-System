@@ -2,18 +2,23 @@ package com.example.demo.config.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-    private final String SECRET_KEY= "secretKey@123";
+
+    private  static final String SECRET_KEY= "9142504BD0FEDF749BFDBA7885F92010E95A57E63E976DFAB65EAA4677C7577C487C9B0AB002110A7891E9816B91BC8CE0FD398E3CEA5375E19C9E0FE94DD1E4";
+    private static final long EXPIRATION_TIME = TimeUnit.MINUTES.toMillis(60);
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -29,9 +34,7 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-
-        Claims claims=Jwts.
-        return Jwts.parser().setSigningKey(token).parseClaimsJws(token).getBody();
+        return Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(token).getPayload();
     }
 
     private Boolean isTokenExpired(String token) {
@@ -48,13 +51,17 @@ public class JwtUtil {
                 .claims(claims)
                 .subject(subject)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)).
-                signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(getSecretKey())
                 .compact();
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    private SecretKey getSecretKey(){
+        return Keys.hmacShaKeyFor(Base64.getDecoder().decode(SECRET_KEY));
     }
 }
