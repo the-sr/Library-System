@@ -1,12 +1,15 @@
 package com.example.demo.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import lombok.*;
 
 import java.util.List;
 
 @Entity
-@Table(name="genre")
+@Table(name = "genre")
 @Getter
 @Setter
 @Builder

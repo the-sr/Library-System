@@ -12,8 +12,10 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserBook{
+public class UserBook {
+
     @Id
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne
@@ -23,10 +25,10 @@ public class UserBook{
     private User user;
 
     @Temporal(TemporalType.DATE)
-    private LocalDate borrowedDate;
+    private LocalDate borrowDate;
 
     @Temporal(TemporalType.DATE)
-    private LocalDate returnedDate;
+    private LocalDate returnDate;
 
     private Integer overDueDays;
 }

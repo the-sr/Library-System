@@ -27,10 +27,9 @@ public class LoginController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginReq loginReq){
+    public ResponseEntity<?> login(@RequestBody LoginReq loginReq) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginReq.getUsername(), loginReq.getPassword())
-        );
+                new UsernamePasswordAuthenticationToken(loginReq.getUsername(), loginReq.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginReq.getUsername());
         final String token = jwtUtil.generateToken(userDetails);
@@ -38,7 +37,7 @@ public class LoginController {
     }
 
     @GetMapping("/logged-in-user")
-    public ResponseEntity<?> getLoggedInUser(){
+    public ResponseEntity<?> getLoggedInUser() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok().body(userService.findByEmail(userDetails.getUsername()));
     }

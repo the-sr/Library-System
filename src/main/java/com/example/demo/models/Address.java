@@ -10,16 +10,17 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="address")
+@Table(name = "address")
 public class Address {
     @Id
+    @Column(name="id")
     private long id;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AddressType addressType;
 
-    @Column(name="is_per_temp_same")
+    @Column(name = "is_per_temp_same")
     private boolean isPerTempSame;
 
     @Column(name = "street")
@@ -31,10 +32,10 @@ public class Address {
     @Column(name = "state")
     private String state;
 
-    @Column(name="zip")
+    @Column(name = "zip")
     private String zip;
 
-    @Column(name="country")
+    @Column(name = "country")
     private String country;
 
     @ManyToOne

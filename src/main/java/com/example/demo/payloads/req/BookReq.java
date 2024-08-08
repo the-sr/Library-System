@@ -1,6 +1,5 @@
 package com.example.demo.payloads.req;
 
-import com.example.demo.models.Genre;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -21,7 +20,7 @@ public class BookReq {
     private String edition;
     @NotNull(message = "Publisher Name is required")
     private String publisher;
-    @Min(value = 1,message = "Minimum Number of book is ONE")
+    @Min(value = 1, message = "Minimum Number of book is ONE")
     private int bookCount;
     @NotNull(message = "Author Details is required")
     private Set<AuthorReq> authors;

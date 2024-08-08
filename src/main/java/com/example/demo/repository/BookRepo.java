@@ -16,7 +16,7 @@ public interface BookRepo extends JpaRepository<Book, Long> {
     @Override
     Page<Book> findAll(Pageable pageable);
 
-    @Query()
+    @Query(value = "select * from Book b where b.title= ?1", nativeQuery = true)
     List<Book> findByTitle(String title);
 
 }

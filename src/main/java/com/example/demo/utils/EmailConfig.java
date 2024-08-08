@@ -18,16 +18,16 @@ public class EmailConfig {
     @Column(name = "sender")
     private String sender;
 
-    @Column(name="smtp_host")
+    @Column(name = "smtp_host")
     private String smtpHost;
 
-    @Column(name="smtp_port")
+    @Column(name = "smtp_port")
     private String smtpPort;
 
-    @Column(name="email_signature")
+    @Column(name = "email_signature")
     private String emailSignature;
 
-    @Column(name="password")
+    @Column(name = "password")
     private String password;
 
 }

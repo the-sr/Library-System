@@ -12,12 +12,13 @@ public interface BookService {
 
     List<BookRes> getAllBooks();
 
-    PagewiseRes<BookRes> getAllBooksPagewise(Integer pageNumber, Integer pageSize,String sortBy,String sortDirection);
+    PagewiseRes<BookRes> getAllBooksPagewise(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection);
 
     BookRes getBookById(Long id);
 
     List<BookRes> getBookByTitle(String title);
 
     void updateBook(BookReq book);
+
     void deleteBookById(Long id);
 }

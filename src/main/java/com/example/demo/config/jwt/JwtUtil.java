@@ -17,7 +17,7 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    private  static final String SECRET_KEY= "9142504BD0FEDF749BFDBA7885F92010E95A57E63E976DFAB65EAA4677C7577C487C9B0AB002110A7891E9816B91BC8CE0FD398E3CEA5375E19C9E0FE94DD1E4";
+    private static final String SECRET_KEY = "9142504BD0FEDF749BFDBA7885F92010E95A57E63E976DFAB65EAA4677C7577C487C9B0AB002110A7891E9816B91BC8CE0FD398E3CEA5375E19C9E0FE94DD1E4";
     private static final long EXPIRATION_TIME = TimeUnit.MINUTES.toMillis(60);
 
     public String extractUsername(String token) {
@@ -28,7 +28,7 @@ public class JwtUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public<T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
@@ -61,7 +61,7 @@ public class JwtUtil {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    private SecretKey getSecretKey(){
+    private SecretKey getSecretKey() {
         return Keys.hmacShaKeyFor(Base64.getDecoder().decode(SECRET_KEY));
     }
 }

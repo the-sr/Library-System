@@ -15,7 +15,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public Genre addGenre(GenreReq genreReq) {
-        Genre genre=Genre.builder()
+        Genre genre = Genre.builder()
                 .id(genreRepo.findNextId())
                 .name(genreReq.getName())
                 .build();
