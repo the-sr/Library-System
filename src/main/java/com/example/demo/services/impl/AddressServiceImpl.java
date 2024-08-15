@@ -7,7 +7,6 @@ import com.example.demo.payloads.res.AddressRes;
 import com.example.demo.repository.AddressRepo;
 import com.example.demo.repository.UserRepo;
 import com.example.demo.services.AddressService;
-import com.example.demo.services.mappers.AddressDetailsMapper;
 import com.example.demo.utils.TransferObject;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,13 +21,19 @@ public class AddressServiceImpl implements AddressService {
 
     private final AddressRepo addressRepo;
     private final UserRepo userRepo;
-    private final AddressDetailsMapper addressDetailsMapper;
 
     @Override
     public AddressRes addAddress(AddressReq addressReq, long userId) {
-        Address address = addressDetailsMapper.toEntity(addressReq);
-        address.setId(addressRepo.findNextId());
-        address.setUser(userRepo.findById(userId).get());
+        Address address = Address.builder()
+                .id(addressRepo.findNextId())
+                .street(addressReq.getStreet())
+                .city(addressReq.getCity())
+                .country(addressReq.getCountry())
+                .state(addressReq.getState())
+                .zip(addressReq.getZip())
+                .addressType(addressReq.getAddressType())
+                .user(userRepo.findById(userId).get())
+                .build();
         addressRepo.save(address);
         return findById(address.getId());
     }

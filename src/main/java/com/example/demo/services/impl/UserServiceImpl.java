@@ -12,7 +12,6 @@ import com.example.demo.repository.AddressRepo;
 import com.example.demo.repository.UserRepo;
 import com.example.demo.services.AddressService;
 import com.example.demo.services.UserService;
-import com.example.demo.services.mappers.UserDetailsMapper;
 import com.example.demo.utils.EmailService;
 import com.example.demo.utils.TransferObject;
 import lombok.AllArgsConstructor;
@@ -37,14 +36,21 @@ public class UserServiceImpl implements UserService {
     private final AddressRepo addressRepo;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
-    private final UserDetailsMapper userDetailsMapper;
 
     @Override
     public UserRes save(UserReq userReq) {
         if (!userReq.getPassword().equals(userReq.getConfirmPassword()))
             throw new CustomException("Confirm Password and Password must be same", HttpStatus.BAD_REQUEST);
-        User user = userDetailsMapper.toEntity(userReq);
-        user.setId(userRepo.findNextId());
+        User user = User.builder()
+                .id(userRepo.findNextId())
+                .firstName(userReq.getFirstName())
+                .middleName(userReq.getMiddleName())
+                .lastName(userReq.getLastName())
+                .email(userReq.getEmail())
+                .password(passwordEncoder.encode(userReq.getPassword()))
+                .role(userReq.getRole())
+                .phone(userReq.getPhone())
+                .build();
         userRepo.save(user);
         emailService.sendMail(user.getEmail(), "Account Registration", "Your account has been successfully registered.");
         if (userReq.getAddress() != null) {
