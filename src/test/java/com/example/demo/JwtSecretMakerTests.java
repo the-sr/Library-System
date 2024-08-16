@@ -10,8 +10,8 @@ public class JwtSecretMakerTests {
 
     @Test
     public void generateJwtSecret() {
-        SecretKey key= Jwts.SIG.HS512.key().build();
-        String encoded= DatatypeConverter.printHexBinary(key.getEncoded());
-        System.out.println("Key: "+encoded);
+        SecretKey key = Jwts.SIG.HS512.key().build();
+        String encoded = DatatypeConverter.printHexBinary(key.getEncoded());
+        System.out.println("Key: " + encoded);
     }
 }
