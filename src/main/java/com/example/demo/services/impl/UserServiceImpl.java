@@ -1,6 +1,8 @@
 package com.example.demo.services.impl;
 
+import com.example.demo.config.Security.AuthenticationFacade;
 import com.example.demo.exception.CustomException;
+import com.example.demo.models.Address;
 import com.example.demo.models.User;
 import com.example.demo.payloads.req.ResetPassReq;
 import com.example.demo.payloads.req.UserReq;
@@ -12,7 +14,7 @@ import com.example.demo.repository.AddressRepo;
 import com.example.demo.repository.UserRepo;
 import com.example.demo.services.AddressService;
 import com.example.demo.services.UserService;
-import com.example.demo.services.mappers.UserDetailsMapper;
+import com.example.demo.services.mappers.UserMapper;
 import com.example.demo.utils.EmailService;
 import com.example.demo.utils.TransferObject;
 import lombok.AllArgsConstructor;
@@ -36,14 +38,25 @@ public class UserServiceImpl implements UserService {
     private final AddressService addressService;
     private final AddressRepo addressRepo;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationFacade facade;
     private final EmailService emailService;
-    private final UserDetailsMapper userDetailsMapper;
+    private final UserMapper userMapper;
 
     @Override
     public UserRes save(UserReq userReq) {
         if (!userReq.getPassword().equals(userReq.getConfirmPassword()))
             throw new CustomException("Confirm Password and Password must be same", HttpStatus.BAD_REQUEST);
-        User user = userDetailsMapper.toEntity(userReq);
+//        User user = User.builder()
+//                .id(userRepo.findNextId())
+//                .firstName(userReq.getFirstName())
+//                .middleName(userReq.getMiddleName())
+//                .lastName(userReq.getLastName())
+//                .email(userReq.getEmail())
+//                .password(passwordEncoder.encode(userReq.getPassword()))
+//                .role(userReq.getRole())
+//                .phone(userReq.getPhone())
+//                .build();
+        User user=userMapper.toEntity(userReq);
         user.setId(userRepo.findNextId());
         userRepo.save(user);
         emailService.sendMail(user.getEmail(), "Account Registration", "Your account has been successfully registered.");
@@ -75,7 +88,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String resetPassword(ResetPassReq passReq) {
-        long userId = 1;
+        long userId=facade.getAuthentication().getUserId();
         Optional<User> user = userRepo.findById(userId);
         if (user.isEmpty()) throw new CustomException("User not found", HttpStatus.NOT_FOUND);
         if (passReq.getOldPassword().equals(user.get().getPassword()))
