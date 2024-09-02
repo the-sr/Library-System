@@ -1,16 +1,11 @@
 package com.example.demo.services.impl;
 
 import com.example.demo.models.Author;
-import com.example.demo.models.Book;
 import com.example.demo.payloads.req.AuthorReq;
-import com.example.demo.payloads.res.AuthorRes;
 import com.example.demo.repository.AuthorRepo;
-import com.example.demo.repository.BookRepo;
 import com.example.demo.services.AuthorService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -22,8 +17,8 @@ public class AuthorServiceImpl implements AuthorService {
     public Author addAuthor(AuthorReq authorReq) {
         Author author = Author.builder()
                 .id(authorRepo.findNextId())
-                .firstName(authorReq.getFirstName())
-                .lastName(authorReq.getLastName())
+                .firstName(authorReq.getFirstname())
+                .lastName(authorReq.getLastname())
                 .email(authorReq.getEmail())
                 .phone(authorReq.getPhone())
                 .build();

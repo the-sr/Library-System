@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface AddressService {
     AddressRes addAddress(AddressReq address, long userId);
+
     List<AddressRes> getAddressByUserId(long userId);
 }
