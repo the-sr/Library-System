@@ -15,6 +15,7 @@ import java.util.List;
 @Table(name = "users")
 public class User {
     @Id
+    @Column(name = "id")
     private long id;
 
     @Column(name = "first_name", nullable = false)

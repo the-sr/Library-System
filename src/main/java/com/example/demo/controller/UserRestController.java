@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
+@RequestMapping
 @AllArgsConstructor
 public class UserRestController {
 
