@@ -29,7 +29,7 @@ public class UserRestController {
 
     @PutMapping("/user/{id}")
     public ResponseEntity<?> updateUser(@PathVariable("id") long id, @Valid @RequestBody UserReq user) {
-        return ResponseEntity.ok().body(userService.updateById(id,user));
+        return ResponseEntity.ok().body(userService.updateById(id, user));
     }
 
     @DeleteMapping("/user/{id}")

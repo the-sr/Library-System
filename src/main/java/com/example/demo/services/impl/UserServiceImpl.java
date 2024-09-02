@@ -1,9 +1,9 @@
 package com.example.demo.services.impl;
 
-import com.example.demo.payloads.req.ResetPassReq;
-import com.example.demo.payloads.req.UserReq;
 import com.example.demo.exception.CustomException;
 import com.example.demo.models.User;
+import com.example.demo.payloads.req.ResetPassReq;
+import com.example.demo.payloads.req.UserReq;
 import com.example.demo.payloads.res.AddressRes;
 import com.example.demo.payloads.res.PagewiseRes;
 import com.example.demo.payloads.res.UserRes;
@@ -12,6 +12,7 @@ import com.example.demo.repository.AddressRepo;
 import com.example.demo.repository.UserRepo;
 import com.example.demo.services.AddressService;
 import com.example.demo.services.UserService;
+import com.example.demo.services.mappers.UserDetailsMapper;
 import com.example.demo.utils.EmailService;
 import com.example.demo.utils.TransferObject;
 import lombok.AllArgsConstructor;
@@ -27,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.antlr.v4.runtime.tree.xpath.XPath.findAll;
-
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -38,25 +37,18 @@ public class UserServiceImpl implements UserService {
     private final AddressRepo addressRepo;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final UserDetailsMapper userDetailsMapper;
 
     @Override
     public UserRes save(UserReq userReq) {
         if (!userReq.getPassword().equals(userReq.getConfirmPassword()))
             throw new CustomException("Confirm Password and Password must be same", HttpStatus.BAD_REQUEST);
-        User user = User.builder()
-                .id(userRepo.findNextId())
-                .firstName(userReq.getFirstName().trim())
-                .middleName(userReq.getMiddleName())
-                .lastName(userReq.getLastName().trim())
-                .email(userReq.getEmail().trim())
-                .password(passwordEncoder.encode(userReq.getPassword()))
-                .role(userReq.getRole())
-                .phone(userReq.getPhone().trim())
-                .build();
+        User user = userDetailsMapper.toEntity(userReq);
+        user.setId(userRepo.findNextId());
         userRepo.save(user);
-        emailService.sendMail(user.getEmail(), "Account Registration","Your account has been successfully registered.");
-        if(userReq.getAddress()!=null) {
-            userReq.getAddress().forEach(address->{
+        emailService.sendMail(user.getEmail(), "Account Registration", "Your account has been successfully registered.");
+        if (userReq.getAddress() != null) {
+            userReq.getAddress().forEach(address -> {
                 addressService.addAddress(address, user.getId());
             });
         }
@@ -67,7 +59,7 @@ public class UserServiceImpl implements UserService {
     public UserRes findById(long id) {
         Optional<User> user = userRepo.findById(id);
         if (user.isEmpty()) throw new CustomException("User not found", HttpStatus.NOT_FOUND);
-        UserRes res= TransferObject.convert(user.get(), UserRes.class);
+        UserRes res = TransferObject.convert(user.get(), UserRes.class);
         res.setAddress(TransferObject.convert(addressRepo.findByUserId(user.get().getId()), AddressRes.class));
         return res;
     }
@@ -76,17 +68,17 @@ public class UserServiceImpl implements UserService {
     public UserRes findByEmail(String email) {
         Optional<UserProjection> user = userRepo.findByEmail(email);
         if (user.isEmpty()) throw new CustomException("User not found", HttpStatus.NOT_FOUND);
-        UserRes res= TransferObject.convert(user.get(), UserRes.class);
+        UserRes res = TransferObject.convert(user.get(), UserRes.class);
         res.setAddress(addressService.getAddressByUserId(user.get().getId()));
         return res;
     }
 
     @Override
     public String resetPassword(ResetPassReq passReq) {
-        long userId=1;
-        Optional<User> user=userRepo.findById(userId);
-        if(user.isEmpty()) throw new CustomException("User not found", HttpStatus.NOT_FOUND);
-        if(passReq.getOldPassword().equals(user.get().getPassword()))
+        long userId = 1;
+        Optional<User> user = userRepo.findById(userId);
+        if (user.isEmpty()) throw new CustomException("User not found", HttpStatus.NOT_FOUND);
+        if (passReq.getOldPassword().equals(user.get().getPassword()))
             user.get().setPassword(passReq.getNewPassword());
         else throw new CustomException("Old password is not correct", HttpStatus.BAD_REQUEST);
         return "Password changed successfully";
@@ -103,8 +95,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRes updateById(long id,UserReq userReq) {
-        User user=userRepo.findById(id).get();
+    public UserRes updateById(long id, UserReq userReq) {
+        User user = userRepo.findById(id).get();
         user.setFirstName(userReq.getFirstName().trim());
         user.setMiddleName(userReq.getMiddleName().trim());
         user.setLastName(userReq.getLastName().trim());
@@ -116,18 +108,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String deleteById(long id) {
-        Optional<User> user=userRepo.findById(id);
-        if(user.isEmpty()) throw new CustomException("User not found", HttpStatus.NOT_FOUND);
+        Optional<User> user = userRepo.findById(id);
+        if (user.isEmpty()) throw new CustomException("User not found", HttpStatus.NOT_FOUND);
         user.get().setActive(false);
         userRepo.save(user.get());
-        emailService.sendMail(user.get().getEmail(), "Account Deletion","Your account will be deleted within a week.");
+        emailService.sendMail(user.get().getEmail(), "Account Deletion", "Your account will be deleted within a week.");
         return "User Deleted Successfully";
     }
+
     @Override
     public List<UserRes> getAllUsers() {
         List<User> users = userRepo.findAll();
         List<UserRes> res = new ArrayList<>();
-        users.forEach(user->{
+        users.forEach(user -> {
             UserRes userRes = TransferObject.convert(user, UserRes.class);
             userRes.setAddress(TransferObject.convert(addressRepo.findByUserId(user.getId()), AddressRes.class));
             res.add(userRes);
@@ -137,16 +130,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PagewiseRes<UserRes> getAllUsersPagewise(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection) {
-        Sort sort=null;
-        if(sortDirection.equalsIgnoreCase("asc"))
-            sort=Sort.by(sortBy).ascending();
-        else if(sortDirection.equalsIgnoreCase("desc"))
-            sort=Sort.by(sortBy).descending();
+        Sort sort = null;
+        if (sortDirection.equalsIgnoreCase("asc"))
+            sort = Sort.by(sortBy).ascending();
+        else if (sortDirection.equalsIgnoreCase("desc"))
+            sort = Sort.by(sortBy).descending();
 
-        Pageable pageable= PageRequest.of(pageNumber,pageSize,sort);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<UserProjection> users = userRepo.findAllPagewise(pageable);
         List<UserRes> res = new ArrayList<>();
-        users.forEach(user->{
+        users.forEach(user -> {
             UserRes userRes = TransferObject.convert(user, UserRes.class);
             userRes.setAddress(TransferObject.convert(addressRepo.findByUserId(user.getId()), AddressRes.class));
             res.add(userRes);
