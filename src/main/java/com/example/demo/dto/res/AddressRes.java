@@ -1,4 +1,4 @@
-package com.example.demo.payloads.res;
+package com.example.demo.dto.res;
 
 import com.example.demo.enums.AddressType;
 import lombok.Getter;

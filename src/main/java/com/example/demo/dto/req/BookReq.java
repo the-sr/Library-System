@@ -1,5 +1,6 @@
-package com.example.demo.payloads.req;
+package com.example.demo.dto.req;
 
+import com.example.demo.dto.AuthorDto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -23,7 +24,7 @@ public class BookReq {
     @Min(value = 1, message = "Minimum Number of book is ONE")
     private int bookCount;
     @NotNull(message = "Author Details is required")
-    private Set<AuthorReq> authors;
+    private Set<AuthorDto> authors;
     @NotNull(message = "At least 1 genre is required")
     private List<GenreReq> genre;
 }

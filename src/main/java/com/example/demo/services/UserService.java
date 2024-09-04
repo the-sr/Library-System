@@ -1,30 +1,29 @@
 package com.example.demo.services;
 
-import com.example.demo.payloads.req.ResetPassReq;
-import com.example.demo.payloads.req.UserReq;
-import com.example.demo.payloads.res.PagewiseRes;
-import com.example.demo.payloads.res.UserRes;
+import com.example.demo.dto.req.ResetPassReq;
+import com.example.demo.dto.UserDto;
+import com.example.demo.dto.res.PagewiseRes;
 
 import java.util.List;
 
 public interface UserService {
-    UserRes save(UserReq userReq);
+    String save(UserDto userDto);
 
-    UserRes findById(long id);
+    UserDto findById(long id);
 
-    List<UserRes> getAllUsers();
+    List<UserDto> getAllUsers();
 
-    PagewiseRes<UserRes> getAllUsersPagewise(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection);
+    PagewiseRes<UserDto> getAllUsersPagewise(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection);
 
     String deleteById(long id);
 
-    UserRes updateById(long id, UserReq userReq);
+    UserDto updateById(long id, UserDto userDto);
 
-    UserRes findByEmail(String email);
+    UserDto findByEmail(String email);
 
-    String resetPassword(ResetPassReq passReq);
+    String changePassword(ResetPassReq passReq);
 
-    List<UserRes> findAllActiveUsers();
+    List<UserDto> findAllActiveUsers();
 
-    List<UserRes> findAllInactiveUsers();
+    List<UserDto> findAllInactiveUsers();
 }

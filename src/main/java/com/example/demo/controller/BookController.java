@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.payloads.req.BookReq;
+import com.example.demo.dto.req.BookReq;
 import com.example.demo.services.BookService;
 import com.example.demo.utils.AppConstants;
 import jakarta.validation.Valid;

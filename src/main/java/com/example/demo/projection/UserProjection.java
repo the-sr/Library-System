@@ -1,5 +1,7 @@
 package com.example.demo.projection;
 
+import com.example.demo.enums.Role;
+
 public interface UserProjection {
     long getId();
 
@@ -11,7 +13,11 @@ public interface UserProjection {
 
     String getEmail();
 
+    Role getRole();
+
     String getPhone();
 
     boolean isActive();
+
+    int getBorrowedBookCount();
 }

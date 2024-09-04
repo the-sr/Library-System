@@ -1,8 +1,8 @@
 package com.example.demo.services;
 
-import com.example.demo.payloads.req.BookReq;
-import com.example.demo.payloads.res.BookRes;
-import com.example.demo.payloads.res.PagewiseRes;
+import com.example.demo.dto.req.BookReq;
+import com.example.demo.dto.res.BookRes;
+import com.example.demo.dto.res.PagewiseRes;
 
 import java.util.List;
 

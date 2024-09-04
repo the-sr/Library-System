@@ -1,7 +1,7 @@
 package com.example.demo.services.impl;
 
 import com.example.demo.models.Genre;
-import com.example.demo.payloads.req.GenreReq;
+import com.example.demo.dto.req.GenreReq;
 import com.example.demo.repository.GenreRepo;
 import com.example.demo.services.GenreService;
 import lombok.RequiredArgsConstructor;

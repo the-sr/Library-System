@@ -12,6 +12,7 @@ import lombok.*;
 @Entity
 @Table(name = "address")
 public class Address {
+
     @Id
     @Column(name="id")
     private long id;

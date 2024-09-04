@@ -1,8 +1,11 @@
 package com.example.demo.services.mappers;
 
-public interface MapperClass<E,D>{
+public interface MapperClass<E,D,P>{
 
-    E toEntity(D d);
+    E dtoToEntity(D d);
 
-    D toDto(E e);
+    D entityToDto(E e);
+
+    D projectionToDto(P p);
+
 }

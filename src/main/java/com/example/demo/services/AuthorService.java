@@ -1,10 +1,10 @@
 package com.example.demo.services;
 
 import com.example.demo.models.Author;
-import com.example.demo.payloads.req.AuthorReq;
+import com.example.demo.dto.AuthorDto;
 
 public interface AuthorService {
 
-    Author addAuthor(AuthorReq authorReq);
+    Author addAuthor(AuthorDto authorDto);
 
 }
