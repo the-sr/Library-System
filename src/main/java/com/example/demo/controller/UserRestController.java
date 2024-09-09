@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping
 @AllArgsConstructor
 public class UserRestController {
 
@@ -58,8 +57,3 @@ public class UserRestController {
     }
 }
 
-
-///api/users/{id}	PUT	Update user details
-///api/users/{id}	DELETE	Delete a user account
-///api/users/forgot-password	POST	Send a password reset link to the user
-///api/users/reset-password	POST	Reset user password using the reset link

@@ -26,4 +26,10 @@ public interface UserService {
     List<UserDto> findAllActiveUsers();
 
     List<UserDto> findAllInactiveUsers();
+
+    String forgotPassword(String email);
+
+    String validateOTP(int otp,String email);
+
+    String resetPassword(String email, String password);
 }

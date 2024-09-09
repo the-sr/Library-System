@@ -1,8 +1,8 @@
 package com.example.demo.services;
 
+import com.example.demo.dto.GenreDto;
 import com.example.demo.models.Genre;
-import com.example.demo.dto.req.GenreReq;
 
 public interface GenreService {
-    Genre addGenre(GenreReq genreReq);
+    Genre addGenre(GenreDto genreDto);
 }

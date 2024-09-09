@@ -11,6 +11,8 @@ import lombok.*;
 @NoArgsConstructor
 
 public class AuthorDto {
+
+    private long id;
     @NotNull(message = "First Name is required.")
     private String firstname;
     @NotNull(message = "First Name is required.")

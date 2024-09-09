@@ -1,24 +1,26 @@
 package com.example.demo.services;
 
-import com.example.demo.dto.req.BookReq;
-import com.example.demo.dto.res.BookRes;
+import com.example.demo.dto.BookDto;
 import com.example.demo.dto.res.PagewiseRes;
 
 import java.util.List;
 
 public interface BookService {
 
-    String saveBook(BookReq book);
+    String saveUpdateBook(BookDto book);
 
-    List<BookRes> getAllBooks();
+    List<BookDto> getAllBooks();
 
-    PagewiseRes<BookRes> getAllBooksPagewise(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection);
+    PagewiseRes<BookDto> getAllBooksPagewise(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection);
 
-    BookRes getBookById(Long id);
+    BookDto getBookById(Long id);
 
-    List<BookRes> getBookByTitle(String title);
+    List<BookDto> getBookByTitle(String title);
 
-    void updateBook(BookReq book);
+    List<BookDto> getBookByAuthor(String author);
 
-    void deleteBookById(Long id);
+    BookDto getBookByISBN(String isbn);
+
+    String deleteBookById(Long id);
+
 }

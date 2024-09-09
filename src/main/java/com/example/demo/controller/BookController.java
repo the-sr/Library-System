@@ -1,23 +1,24 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.req.BookReq;
+import com.example.demo.dto.BookDto;
 import com.example.demo.services.BookService;
 import com.example.demo.utils.AppConstants;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class BookController {
 
     private BookService bookService;
 
-
     @PostMapping("/add-book")
-    public ResponseEntity<?> addBook(@Valid @RequestBody BookReq book) {
-        return ResponseEntity.ok().body(bookService.saveBook(book));
+    public ResponseEntity<?> addBook(@Valid @RequestBody BookDto book) {
+        return ResponseEntity.ok().body(bookService.saveUpdateBook(book));
     }
 
     @GetMapping("/books")
@@ -39,19 +40,29 @@ public class BookController {
         return ResponseEntity.ok().body(bookService.getBookById(id));
     }
 
-    @GetMapping("/book")
+    @GetMapping("/books-by-title")
     public ResponseEntity<?> getBookByTitle(@RequestParam("title") String title) {
         return ResponseEntity.ok().body(bookService.getBookByTitle(title));
     }
 
-    @PutMapping("/book/{id}")
-    public ResponseEntity<?> updateBook(@RequestBody BookReq book) {
-        return null;
+    @GetMapping("/books-by-author")
+    public ResponseEntity<?> getBookByAuthor(@RequestParam("author") String author) {
+        return ResponseEntity.ok().body(bookService.getBookByAuthor(author));
+    }
+
+    @GetMapping("/books-by-isbn")
+    public ResponseEntity<?> getBookByISBN(@RequestParam("isbn") String isbn) {
+        return ResponseEntity.ok().body(bookService.getBookByISBN(isbn));
+    }
+
+    @PutMapping("/book")
+    public ResponseEntity<?> updateBook(@RequestBody BookDto book) {
+        return ResponseEntity.ok().body(bookService.saveUpdateBook(book));
     }
 
     @DeleteMapping("/book/{id}")
-    public ResponseEntity<?> deleteBook(@PathVariable("id") String id) {
-        return null;
+    public ResponseEntity<?> deleteBook(@PathVariable("id") Long id) {
+        return ResponseEntity.ok().body(bookService.deleteBookById(id));
     }
 
 }

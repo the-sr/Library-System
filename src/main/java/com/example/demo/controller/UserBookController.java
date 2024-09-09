@@ -1,14 +1,17 @@
 package com.example.demo.controller;
 
 import com.example.demo.services.UserBookService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequiredArgsConstructor
-@RestController("/book")
+@RestController
+@AllArgsConstructor
+@RequestMapping("/book")
 public class UserBookController {
 
     private final UserBookService userBookService;

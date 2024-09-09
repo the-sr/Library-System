@@ -1,14 +1,18 @@
 package com.example.demo.services.mappers;
 
+import com.example.demo.dto.BookDto;
 import com.example.demo.models.Book;
-import com.example.demo.dto.req.BookReq;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface BookMapper extends MapperClass<Book, BookReq,Void> {
+public interface BookMapper extends MapperClass<Book, BookDto,Void> {
 
-    Book dtoToEntity(BookReq bookReq);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "authors", ignore = true)
+    @Mapping(target = "genre",ignore = true)
+    Book dtoToEntity(BookDto bookDto);
 
-    BookReq toBookReq(Book book);
+    BookDto entityToDto(Book book);
 
 }

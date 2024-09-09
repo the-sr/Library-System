@@ -7,9 +7,7 @@ import com.example.demo.models.OTP;
 import com.example.demo.models.User;
 import com.example.demo.dto.req.ResetPassReq;
 import com.example.demo.dto.UserDto;
-import com.example.demo.dto.res.AddressRes;
 import com.example.demo.dto.res.PagewiseRes;
-import com.example.demo.dto.res.UserRes;
 import com.example.demo.projection.UserProjection;
 import com.example.demo.repository.AddressRepo;
 import com.example.demo.repository.OTPRepo;
@@ -19,7 +17,6 @@ import com.example.demo.services.UserService;
 import com.example.demo.services.mappers.AddressMapper;
 import com.example.demo.services.mappers.UserMapper;
 import com.example.demo.utils.EmailService;
-import com.example.demo.utils.TransferObject;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -84,6 +81,7 @@ public class UserServiceImpl implements UserService {
         return res;
     }
 
+    @Override
     public String forgotPassword(String email) {
         UserProjection user=userRepo.findByEmail(email).orElseThrow(()->new CustomException("User not found", HttpStatus.NOT_FOUND));
         int otp=100000+ new Random().nextInt(900000);
@@ -93,12 +91,14 @@ public class UserServiceImpl implements UserService {
         return "OTP is sent to your email, use otp to reset your password.";
     }
 
+    @Override
     public String validateOTP(int otp, String email){
         if(!otpRepo.existsByOtpAndEmail(otp,email))
             throw new CustomException("Invalid OTP", HttpStatus.BAD_REQUEST);
         return "OTP is valid";
     }
 
+    @Override
     public String resetPassword(String email, String password) {
         long userId=userRepo.findByEmail(email).orElseThrow(()->new CustomException("User Not found",HttpStatus.NOT_FOUND)).getId();
         User user=userRepo.findById(userId).orElseThrow(()->new CustomException("User Not Found",HttpStatus.NOT_FOUND));

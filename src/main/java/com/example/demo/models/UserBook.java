@@ -30,5 +30,13 @@ public class UserBook {
     @Temporal(TemporalType.DATE)
     private LocalDate returnDate;
 
-    private Integer overDueDays;
+    @Temporal(TemporalType.DATE)
+    private LocalDate expectedReturnDate;
+
+    private boolean isActive;
+
+    @PrePersist
+    protected void isActive() {
+        isActive = true;
+    }
 }

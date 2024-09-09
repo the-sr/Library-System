@@ -3,7 +3,6 @@ package com.example.demo.services.impl;
 import com.example.demo.exception.CustomException;
 import com.example.demo.models.Address;
 import com.example.demo.dto.AddressDto;
-import com.example.demo.dto.res.AddressRes;
 import com.example.demo.repository.AddressRepo;
 import com.example.demo.repository.UserRepo;
 import com.example.demo.services.AddressService;
@@ -33,15 +32,15 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public List<AddressRes> getAddressByUserId(long userId) {
+    public List<AddressDto> getAddressByUserId(long userId) {
         List<Address> addressList = addressRepo.findByUserId(userId);
         if (addressList.isEmpty()) throw new CustomException("Address Not Found", HttpStatus.NOT_FOUND);
-        return TransferObject.convert(addressList, AddressRes.class);
+        return TransferObject.convert(addressList, AddressDto.class);
     }
 
-    public AddressRes findById(long id) {
+    public AddressDto findById(long id) {
         Optional<Address> address = addressRepo.findById(id);
         if (address.isEmpty()) throw new CustomException("Address not found", HttpStatus.NOT_FOUND);
-        return TransferObject.convert(address.get(), AddressRes.class);
+        return TransferObject.convert(address.get(), AddressDto.class);
     }
 }

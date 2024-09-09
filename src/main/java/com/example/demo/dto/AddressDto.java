@@ -12,6 +12,8 @@ import lombok.*;
 
 public class AddressDto {
 
+    private long id;
+
     @NotNull(message = "Address Type is required")
     private AddressType addressType;
 
