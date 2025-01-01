@@ -1,4 +1,4 @@
-package com.example.demo.payloads.req;
+package com.example.demo.dto.req;
 
 import lombok.Getter;
 import lombok.Setter;

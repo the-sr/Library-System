@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.payloads.req.ResetPassReq;
-import com.example.demo.payloads.req.UserReq;
+import com.example.demo.dto.req.ResetPassReq;
+import com.example.demo.dto.UserDto;
 import com.example.demo.services.UserService;
 import com.example.demo.utils.AppConstants;
 import jakarta.validation.Valid;
@@ -17,8 +17,8 @@ public class UserRestController {
 
     private final UserService userService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> save(@Valid @RequestBody UserReq user) {
+    @PostMapping("/register")
+    public ResponseEntity<?> save(@Valid @RequestBody UserDto user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
     }
 
@@ -28,7 +28,7 @@ public class UserRestController {
     }
 
     @PutMapping("/user/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable("id") long id, @Valid @RequestBody UserReq user) {
+    public ResponseEntity<?> updateUser(@PathVariable("id") long id, @Valid @RequestBody UserDto user) {
         return ResponseEntity.ok().body(userService.updateById(id, user));
     }
 
@@ -53,6 +53,7 @@ public class UserRestController {
 
     @PutMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPassReq passReq) {
-        return ResponseEntity.ok().body(userService.resetPassword(passReq));
+        return ResponseEntity.ok().body(userService.changePassword(passReq));
     }
 }
+

@@ -2,8 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.config.Security.AuthenticationFacade;
 import com.example.demo.config.jwt.JwtUtil;
-import com.example.demo.payloads.req.LoginReq;
-import com.example.demo.payloads.res.LoginRes;
+import com.example.demo.dto.req.LoginReq;
+import com.example.demo.dto.res.LoginRes;
 import com.example.demo.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

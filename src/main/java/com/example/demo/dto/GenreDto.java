@@ -1,4 +1,4 @@
-package com.example.demo.payloads.req;
+package com.example.demo.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -8,7 +8,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GenreReq {
+public class GenreDto {
+
+    private long id;
+
     @NotNull(message = "Genre name is required")
     private String name;
 }

@@ -2,11 +2,11 @@ package com.example.demo.services.impl;
 
 import com.example.demo.exception.CustomException;
 import com.example.demo.models.Address;
-import com.example.demo.payloads.req.AddressReq;
-import com.example.demo.payloads.res.AddressRes;
+import com.example.demo.dto.AddressDto;
 import com.example.demo.repository.AddressRepo;
 import com.example.demo.repository.UserRepo;
 import com.example.demo.services.AddressService;
+import com.example.demo.services.mappers.AddressMapper;
 import com.example.demo.utils.TransferObject;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,33 +21,26 @@ public class AddressServiceImpl implements AddressService {
 
     private final AddressRepo addressRepo;
     private final UserRepo userRepo;
+    private final AddressMapper addressMapper;
 
     @Override
-    public AddressRes addAddress(AddressReq addressReq, long userId) {
-        Address address = Address.builder()
-                .id(addressRepo.findNextId())
-                .street(addressReq.getStreet())
-                .city(addressReq.getCity())
-                .country(addressReq.getCountry())
-                .state(addressReq.getState())
-                .zip(addressReq.getZip())
-                .addressType(addressReq.getAddressType())
-                .user(userRepo.findById(userId).get())
-                .build();
+    public void addAddress(AddressDto addressDto, long userId) {
+        Address address = addressMapper.dtoToEntity(addressDto);
+        address.setId(addressRepo.findNextId());
+        address.setUser(userRepo.findById(userId).get());
         addressRepo.save(address);
-        return findById(address.getId());
     }
 
     @Override
-    public List<AddressRes> getAddressByUserId(long userId) {
+    public List<AddressDto> getAddressByUserId(long userId) {
         List<Address> addressList = addressRepo.findByUserId(userId);
         if (addressList.isEmpty()) throw new CustomException("Address Not Found", HttpStatus.NOT_FOUND);
-        return TransferObject.convert(addressList, AddressRes.class);
+        return TransferObject.convert(addressList, AddressDto.class);
     }
 
-    public AddressRes findById(long id) {
+    public AddressDto findById(long id) {
         Optional<Address> address = addressRepo.findById(id);
         if (address.isEmpty()) throw new CustomException("Address not found", HttpStatus.NOT_FOUND);
-        return TransferObject.convert(address.get(), AddressRes.class);
+        return TransferObject.convert(address.get(), AddressDto.class);
     }
 }

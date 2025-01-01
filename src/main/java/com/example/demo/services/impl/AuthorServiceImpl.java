@@ -1,9 +1,10 @@
 package com.example.demo.services.impl;
 
+import com.example.demo.dto.AuthorDto;
 import com.example.demo.models.Author;
-import com.example.demo.payloads.req.AuthorReq;
 import com.example.demo.repository.AuthorRepo;
 import com.example.demo.services.AuthorService;
+import com.example.demo.services.mappers.AuthorMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,16 +13,12 @@ import org.springframework.stereotype.Service;
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepo authorRepo;
+    private final AuthorMapper authorMapper;
 
     @Override
-    public Author addAuthor(AuthorReq authorReq) {
-        Author author = Author.builder()
-                .id(authorRepo.findNextId())
-                .firstName(authorReq.getFirstname())
-                .lastName(authorReq.getLastname())
-                .email(authorReq.getEmail())
-                .phone(authorReq.getPhone())
-                .build();
+    public Author addAuthor(AuthorDto authorDto) {
+        Author author = authorMapper.dtoToEntity(authorDto);
+        author.setId(authorRepo.findNextId());
         return authorRepo.save(author);
     }
 }

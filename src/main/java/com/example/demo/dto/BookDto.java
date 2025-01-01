@@ -1,4 +1,4 @@
-package com.example.demo.payloads.req;
+package com.example.demo.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -12,18 +12,27 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookReq {
+public class BookDto {
+
+    private Long id;
+
     @NotNull(message = "ISBN is required")
     private String isbn;
+
     @NotNull(message = "Book Title is required")
     private String title;
+
     private String edition;
+
     @NotNull(message = "Publisher Name is required")
     private String publisher;
+
     @Min(value = 1, message = "Minimum Number of book is ONE")
     private int bookCount;
+
     @NotNull(message = "Author Details is required")
-    private Set<AuthorReq> authors;
+    private Set<AuthorDto> authors;
+
     @NotNull(message = "At least 1 genre is required")
-    private List<GenreReq> genre;
+    private List<GenreDto> genre;
 }

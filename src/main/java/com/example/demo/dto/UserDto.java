@@ -1,4 +1,4 @@
-package com.example.demo.payloads.req;
+package com.example.demo.dto;
 
 import com.example.demo.enums.Role;
 import jakarta.validation.constraints.Email;
@@ -13,7 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserReq {
+public class UserDto {
+
+    private long id;
 
     @NotEmpty(message = "First name cannot be blank")
     private String firstName;
@@ -36,5 +38,7 @@ public class UserReq {
 
     private String phone;
 
-    private List<AddressReq> address;
+    private List<AddressDto> address;
+
+    private int borrowedBookCount;
 }

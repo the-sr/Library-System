@@ -1,4 +1,4 @@
-package com.example.demo.payloads.req;
+package com.example.demo.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +10,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class AuthorReq {
+public class AuthorDto {
+
+    private long id;
     @NotNull(message = "First Name is required.")
     private String firstname;
     @NotNull(message = "First Name is required.")
