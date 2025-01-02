@@ -40,7 +40,7 @@ public class LoginController {
 
     @GetMapping("/logged-in-user")
     public ResponseEntity<?> getLoggedInUser() {
-        long userId=facade.getAuthentication().getUserId();
+        long userId = facade.getAuthentication().getUserId();
         return ResponseEntity.ok().body(userService.findById(userId));
     }
 }
