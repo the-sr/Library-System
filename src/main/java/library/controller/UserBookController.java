@@ -1,6 +1,5 @@
 package library.controller;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import library.services.UserBookService;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/book")
+@RequiredArgsConstructor
 public class UserBookController {
 
     private final UserBookService userBookService;
