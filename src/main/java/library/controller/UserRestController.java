@@ -1,5 +1,6 @@
 package library.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import library.dto.UserDto;
 import library.dto.req.ResetPassReq;
@@ -16,26 +17,31 @@ public class UserRestController {
 
     private final UserService userService;
 
+    @Operation(summary = "User Registration")
     @PostMapping("/register")
     public ResponseEntity<?> save(@Valid @RequestBody UserDto user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
     }
 
+    @Operation(summary = "Get user by ID")
     @GetMapping("/user/{id}")
     public ResponseEntity<?> getUser(@PathVariable("id") long id) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findById(id));
     }
 
+    @Operation(summary = "Update user by ID")
     @PutMapping("/user/{id}")
     public ResponseEntity<?> updateUser(@PathVariable("id") long id, @Valid @RequestBody UserDto user) {
         return ResponseEntity.ok().body(userService.updateById(id, user));
     }
 
+    @Operation(summary = "Delete user by ID")
     @DeleteMapping("/user/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable("id") long id) {
         return ResponseEntity.ok().body(userService.deleteById(id));
     }
 
+    @Operation(summary = "Get all users")
     @GetMapping("/users")
     public ResponseEntity<?> getUsers() {
         return ResponseEntity.ok().body(userService.getAllUsers());
