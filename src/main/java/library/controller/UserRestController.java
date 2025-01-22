@@ -17,12 +17,6 @@ public class UserRestController {
 
     private final UserService userService;
 
-    @Operation(summary = "User Registration")
-    @PostMapping("/register")
-    public ResponseEntity<?> save(@Valid @RequestBody UserDto user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
-    }
-
     @Operation(summary = "Get user by ID")
     @GetMapping("/user/{id}")
     public ResponseEntity<?> getUser(@PathVariable("id") long id) {
