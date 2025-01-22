@@ -10,19 +10,23 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "address")
+@Table(name = "address",
+        indexes = {
+                @Index(name = "indexed_address_type", columnList = "address_type")
+        })
 public class Address {
 
     @Id
     @Column(name = "id")
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AddressType addressType;
 
     @Column(name = "is_per_temp_same")
-    private boolean isPerTempSame;
+    private Boolean isPerTempSame;
 
     @Column(name = "street")
     private String street;
@@ -40,6 +44,6 @@ public class Address {
     private String country;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 }

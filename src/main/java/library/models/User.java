@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import library.enums.Role;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -12,11 +13,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "users",
+        indexes = {@Index(name = "indexed_user_email", columnList = "email", unique = true)}
+)
 public class User {
     @Id
-    @Column(name = "id")
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -40,17 +43,24 @@ public class User {
     @Column(name = "phone")
     private String phone;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Column(name = "created_date")
+    private LocalDate createdDate;
+
+    @Column(name = "updated_date")
+    private LocalDate updatedDate;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Address> address;
 
-    @Column(name = "is_active")
-    private boolean isActive;
+    @Column(name = "is_active", columnDefinition = "boolean default false")
+    private Boolean isActive;
 
     @Column(name = "borrowed_book_count")
-    private int borrowedBookCount;
+    private Integer borrowedBookCount;
 
     @PrePersist
-    private void prePersist() {
+    private void onCreate() {
         isActive = true;
+        createdDate= LocalDate.now();
     }
 }

@@ -12,15 +12,11 @@ import library.projection.UserProjection;
 @Mapper(componentModel = "spring")
 public interface UserMapper extends MapperClass<User, UserDto, UserProjection> {
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", qualifiedByName = "encodePassword")
-    @Mapping(target = "borrowedBookCount", ignore = true)
-    @Mapping(target = "address", ignore = true)
     User dtoToEntity(UserDto userDto);
 
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "confirmPassword", ignore = true)
-    @Mapping(target = "address", ignore = true)
     UserDto entityToDto(User user);
 
     UserDto projectionToDto(UserProjection userProjection);

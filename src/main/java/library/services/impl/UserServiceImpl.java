@@ -1,6 +1,6 @@
 package library.services.impl;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,197 +10,67 @@ import org.springframework.stereotype.Service;
 
 import library.config.security.AuthenticationFacade;
 import library.dto.UserDto;
-import library.dto.req.ResetPassReq;
 import library.dto.res.PagewiseRes;
 import library.exception.CustomException;
-import library.models.Address;
-import library.models.OTP;
 import library.models.User;
-import library.projection.UserProjection;
-import library.repository.AddressRepo;
-import library.repository.OTPRepo;
 import library.repository.UserRepo;
-import library.services.AddressService;
 import library.services.UserService;
-import library.services.mappers.AddressMapper;
 import library.services.mappers.UserMapper;
 import library.utils.EmailService;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
-    private final AddressService addressService;
-    private final AddressRepo addressRepo;
     private final AuthenticationFacade facade;
     private final EmailService emailService;
     private final UserMapper userMapper;
-    private final AddressMapper addressMapper;
-    private final OTPRepo otpRepo;
 
     @Override
-    public String save(UserDto userDto) {
-        if (!userDto.getPassword().equals(userDto.getConfirmPassword()))
+    public UserDto save(UserDto req) {
+        if (userRepo.existsByEmail(req.getEmail()))
+            throw new CustomException("Email already registered", HttpStatus.BAD_REQUEST);
+        if (!req.getPassword().equals(req.getConfirmPassword()))
             throw new CustomException("Confirm Password and Password must be same", HttpStatus.BAD_REQUEST);
-        User user = userMapper.dtoToEntity(userDto);
-        user.setId(userRepo.findNextId());
-        userRepo.save(user);
+        User user = userMapper.dtoToEntity(req);
+        user=userRepo.save(user);
         emailService.sendMail(user.getEmail(), "Account Registration",
                 "Your account has been successfully registered.");
-        if (userDto.getAddress() != null) {
-            userDto.getAddress().forEach(address -> {
-                addressService.addAddress(address, user.getId());
-            });
-        }
-        return "User successfully created";
-    }
-
-    @Override
-    public UserDto findById(long id) {
-        Optional<User> user = userRepo.findById(id);
-        if (user.isEmpty())
-            throw new CustomException("User not found", HttpStatus.NOT_FOUND);
-        UserDto res = userMapper.entityToDto(user.get());
-        // List<Address> addressList=addressRepo.findByUserId(id);
-        // if(!addressList.isEmpty())
-        // addressList.forEach(address -> {
-        // res.getAddress().add(addressMapper.entityToDto(address));
-        // });
-        return res;
-    }
-
-    @Override
-    public UserDto findByEmail(String email) {
-        Optional<UserProjection> user = userRepo.findByEmail(email);
-        if (user.isEmpty())
-            throw new CustomException("User not found", HttpStatus.NOT_FOUND);
-        UserDto res = userMapper.projectionToDto(user.get());
-        List<Address> addressList = addressRepo.findByUserId(res.getId());
-        addressList.forEach(address -> {
-            res.getAddress().add(addressMapper.entityToDto(address));
-        });
-        return res;
-    }
-
-    @Override
-    public String forgotPassword(String email) {
-        UserProjection user = userRepo.findByEmail(email)
-                .orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
-        int otp = 100000 + new Random().nextInt(900000);
-        String body = String.format("Your OTP to reset password is %d. It is valid for next 5 minutes.", otp);
-        emailService.sendMail(user.getEmail(), "Password Reset Request", body);
-        otpRepo.save(OTP.builder().otp(otp).email(email).createdAt(LocalDateTime.now())
-                .expiresAt(LocalDateTime.now().plusMinutes(5)).build());
-        return "OTP is sent to your email, use otp to reset your password.";
-    }
-
-    @Override
-    public String validateOTP(int otp, String email) {
-        if (!otpRepo.existsByOtpAndEmail(otp, email))
-            throw new CustomException("Invalid OTP", HttpStatus.BAD_REQUEST);
-        return "OTP is valid";
-    }
-
-    @Override
-    public String resetPassword(String email, String password) {
-        long userId = userRepo.findByEmail(email)
-                .orElseThrow(() -> new CustomException("User Not found", HttpStatus.NOT_FOUND)).getId();
-        User user = userRepo.findById(userId)
-                .orElseThrow(() -> new CustomException("User Not Found", HttpStatus.NOT_FOUND));
-        user.setPassword(password);
-        userRepo.save(user);
-        emailService.sendMail(user.getEmail(), "Password Reset Request", "Your password has been successfully reset.");
-        return "Password reset successful";
-    }
-
-    @Override
-    public String changePassword(ResetPassReq passReq) {
-        long userId = facade.getAuthentication().getUserId();
-        Optional<User> user = userRepo.findById(userId);
-        if (user.isEmpty())
-            throw new CustomException("User not found", HttpStatus.NOT_FOUND);
-        if (passReq.getOldPassword().equals(user.get().getPassword())) {
-            user.get().setPassword(passReq.getNewPassword());
-            userRepo.save(user.get());
-        } else
-            throw new CustomException("Old password is not correct", HttpStatus.BAD_REQUEST);
-        return "Password changed successfully";
-    }
-
-    @Override
-    public List<UserDto> findAllActiveUsers() {
-        List<UserProjection> userList = userRepo.findAllByIsActive();
-        return getUserDtos(userList);
-    }
-
-    @Override
-    public List<UserDto> findAllInactiveUsers() {
-        List<UserProjection> userList = userRepo.findAllByInactive();
-        return getUserDtos(userList);
-    }
-
-    @Override
-    public UserDto updateById(long id, UserDto userDto) {
-        User user = userRepo.findById(id)
-                .orElseThrow(() -> new CustomException("User Not Found", HttpStatus.NOT_FOUND));
-        user.setFirstName(userDto.getFirstName().trim());
-        user.setMiddleName(userDto.getMiddleName().trim());
-        user.setLastName(userDto.getLastName().trim());
-        user.setEmail(userDto.getEmail().trim());
-        user.setPhone(userDto.getPhone().trim());
-        user = userRepo.save(user);
         return userMapper.entityToDto(user);
     }
 
     @Override
-    public String deleteById(long id) {
-        User user = userRepo.findById(id)
-                .orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
-        user.setActive(false);
-        userRepo.save(user);
-        emailService.sendMail(user.getEmail(), "Account Deletion", "Your account will be deleted within a week.");
-        return "User Deleted Successfully";
+    public UserDto findById(long id) {
+        User user=userRepo.findById(id).orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
+        return userMapper.entityToDto(user);
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
-        List<User> userList = userRepo.findAll();
-        List<UserDto> res = new ArrayList<>();
-        userList.forEach(user -> {
-            res.add(userMapper.entityToDto(user));
-        });
-        res.forEach(user -> {
-            List<Address> addressList = addressRepo.findByUserId(user.getId());
-            addressList.forEach(address -> {
-                user.getAddress().add(addressMapper.entityToDto(address));
-            });
-        });
-        return res;
+    public UserDto findByEmail(String email) {
+        return userMapper.entityToDto(userRepo.findByEmail(email).orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND)));
     }
 
     @Override
-    public PagewiseRes<UserDto> getAllUsersPagewise(Integer pageNumber, Integer pageSize, String sortBy,
-            String sortDirection) {
+    public List<UserDto> getAllUsers(Boolean status) {
+        List<User> userList = userRepo.findAllByIsActive(status);
+        return userList.stream().map(userMapper::entityToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public PagewiseRes<UserDto> getAllUsersPagewise(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection) {
         Sort sort = null;
         if (sortDirection.equalsIgnoreCase("asc"))
             sort = Sort.by(sortBy).ascending();
         else if (sortDirection.equalsIgnoreCase("desc"))
             sort = Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-        Page<UserProjection> users = userRepo.findAllPagewise(pageable);
-        List<UserDto> res = new ArrayList<>();
-        users.forEach(user -> {
-            UserDto userDto = userMapper.projectionToDto(user);
-            List<Address> addressList = addressRepo.findByUserId(user.getId());
-            addressList.forEach(address -> {
-                userDto.getAddress().add(addressMapper.entityToDto(address));
-            });
-            res.add(userDto);
-        });
+        Page<User> users = userRepo.findAllPagewise(pageable);
+        List<UserDto> res = users.stream().map(userMapper::entityToDto).collect(Collectors.toList());
         PagewiseRes<UserDto> pagewiseRes = new PagewiseRes<>();
         pagewiseRes.setRes(res);
         pagewiseRes.setTotalPages(users.getTotalPages());
@@ -211,18 +81,27 @@ public class UserServiceImpl implements UserService {
         return pagewiseRes;
     }
 
-    private List<UserDto> getUserDtos(List<UserProjection> userList) {
-        List<UserDto> res = new ArrayList<>();
-        userList.forEach(user -> {
-            res.add(userMapper.projectionToDto(user));
-        });
-        res.forEach(user -> {
-            List<Address> addressList = addressRepo.findByUserId(user.getId());
-            addressList.forEach(address -> {
-                user.getAddress().add(addressMapper.entityToDto(address));
-            });
-        });
-        return res;
+    @Override
+    public UserDto updateById(UserDto req) {
+        User user = userRepo.findById(req.getId()).orElseThrow(() -> new CustomException("User Not Found", HttpStatus.NOT_FOUND));
+        user.setFirstName(req.getFirstName().trim());
+        user.setMiddleName(req.getMiddleName().trim());
+        user.setLastName(req.getLastName().trim());
+        user.setEmail(req.getEmail().trim());
+        user.setPhone(req.getPhone().trim());
+        user.setUpdatedDate(LocalDate.now());
+        return userMapper.entityToDto(userRepo.save(user));
     }
+
+    @Override
+    public String deleteById(long id) {
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
+        user.setIsActive(false);
+        userRepo.save(user);
+        emailService.sendMail(user.getEmail(), "Account Deletion", "Your account will be deleted within a week.");
+        return "User Deleted Successfully";
+    }
+
 
 }

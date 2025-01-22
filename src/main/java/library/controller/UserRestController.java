@@ -3,42 +3,30 @@ package library.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import library.dto.UserDto;
-import library.dto.req.ResetPassReq;
 import library.services.UserService;
 import library.utils.AppConstants;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@AllArgsConstructor
+@RequestMapping("/api/user")
+@RequiredArgsConstructor
 public class UserRestController {
 
     private final UserService userService;
 
     @Operation(summary = "Get user by ID")
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getUser(@PathVariable("id") long id) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findById(id));
     }
 
-    @Operation(summary = "Update user by ID")
-    @PutMapping("/user/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable("id") long id, @Valid @RequestBody UserDto user) {
-        return ResponseEntity.ok().body(userService.updateById(id, user));
-    }
-
-    @Operation(summary = "Delete user by ID")
-    @DeleteMapping("/user/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable("id") long id) {
-        return ResponseEntity.ok().body(userService.deleteById(id));
-    }
-
     @Operation(summary = "Get all users")
-    @GetMapping("/users")
-    public ResponseEntity<?> getUsers() {
-        return ResponseEntity.ok().body(userService.getAllUsers());
+    @GetMapping
+    public ResponseEntity<?> getUsers(@RequestParam(required = false) Boolean status) {
+        return ResponseEntity.ok().body(userService.getAllUsers(status));
     }
 
     @GetMapping("/page-wise-users/{pageNumber}")
@@ -50,8 +38,15 @@ public class UserRestController {
         return ResponseEntity.ok().body(userService.getAllUsersPagewise(pageNumber, pageSize, sortBy, sortDirection));
     }
 
-    @PutMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPassReq passReq) {
-        return ResponseEntity.ok().body(userService.changePassword(passReq));
+    @Operation(summary = "Update user")
+    @PutMapping
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UserDto req) {
+        return ResponseEntity.ok().body(userService.updateById(req));
+    }
+
+    @Operation(summary = "Delete user by ID")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable("id") long id) {
+        return ResponseEntity.ok().body(userService.deleteById(id));
     }
 }

@@ -12,7 +12,7 @@ import lombok.*;
 
 public class AddressDto {
 
-    private long id;
+    private Long id;
 
     @NotNull(message = "Address Type is required")
     private AddressType addressType;
@@ -31,5 +31,5 @@ public class AddressDto {
     @NotNull(message = "Country is required.")
     private String country;
 
-    private boolean isPerTemp;
+    private Boolean isPerTempSame;
 }

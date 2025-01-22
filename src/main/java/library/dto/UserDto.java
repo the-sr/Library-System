@@ -6,16 +6,17 @@ import library.enums.Role;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class UserDto {
 
-    private long id;
+    private Long id;
 
     @NotEmpty(message = "First name cannot be blank")
     private String firstName;
@@ -38,7 +39,13 @@ public class UserDto {
 
     private String phone;
 
+    private LocalDate createdDate;
+
+    private LocalDate updatedDate;
+
     private List<AddressDto> address;
 
-    private int borrowedBookCount;
+    private Boolean isActive;
+
+    private Integer borrowedBookCount;
 }

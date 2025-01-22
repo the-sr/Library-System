@@ -10,7 +10,6 @@ import library.models.Address;
 import library.repository.AddressRepo;
 import library.repository.UserRepo;
 import library.services.AddressService;
-import library.services.mappers.AddressMapper;
 import library.utils.TransferObject;
 
 import java.util.List;
@@ -22,15 +21,6 @@ public class AddressServiceImpl implements AddressService {
 
     private final AddressRepo addressRepo;
     private final UserRepo userRepo;
-    private final AddressMapper addressMapper;
-
-    @Override
-    public void addAddress(AddressDto addressDto, long userId) {
-        Address address = addressMapper.dtoToEntity(addressDto);
-        address.setId(addressRepo.findNextId());
-        address.setUser(userRepo.findById(userId).get());
-        addressRepo.save(address);
-    }
 
     @Override
     public List<AddressDto> getAddressByUserId(long userId) {

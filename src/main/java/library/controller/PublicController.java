@@ -33,16 +33,16 @@ public class PublicController {
 
     @Operation(summary = "Sign Up and Registration")
     @PostMapping("/sign-up")
-    public ResponseEntity<?> save(@Valid @RequestBody UserDto user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
+    public ResponseEntity<?> save(@Valid @RequestBody UserDto req) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(req));
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<?> login(@RequestBody LoginReq loginReq) {
+    public ResponseEntity<?> login(@RequestBody LoginReq req) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginReq.getUsername(), loginReq.getPassword()));
+                new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginReq.getUsername());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(req.getUsername());
         final String token = jwtUtil.generateToken(userDetails);
         return ResponseEntity.ok().body(new LoginRes(token));
     }

@@ -7,29 +7,18 @@ import library.dto.req.ResetPassReq;
 import library.dto.res.PagewiseRes;
 
 public interface UserService {
-    String save(UserDto userDto);
+    UserDto save(UserDto req);
 
     UserDto findById(long id);
 
-    List<UserDto> getAllUsers();
+    List<UserDto> getAllUsers(Boolean status);
 
     PagewiseRes<UserDto> getAllUsersPagewise(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection);
 
     String deleteById(long id);
 
-    UserDto updateById(long id, UserDto userDto);
+    UserDto updateById(UserDto req);
 
     UserDto findByEmail(String email);
 
-    String changePassword(ResetPassReq passReq);
-
-    List<UserDto> findAllActiveUsers();
-
-    List<UserDto> findAllInactiveUsers();
-
-    String forgotPassword(String email);
-
-    String validateOTP(int otp, String email);
-
-    String resetPassword(String email, String password);
 }
