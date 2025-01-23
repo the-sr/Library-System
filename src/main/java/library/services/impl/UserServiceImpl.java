@@ -1,5 +1,6 @@
 package library.services.impl;
 
+import library.services.AddressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,9 +28,9 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
-    private final AuthenticationFacade facade;
-    private final EmailService emailService;
     private final UserMapper userMapper;
+    private final AddressService addressService;
+    private final EmailService emailService;
 
     @Override
     public UserDto save(UserDto req) {
@@ -37,10 +38,14 @@ public class UserServiceImpl implements UserService {
             throw new CustomException("Email already registered", HttpStatus.BAD_REQUEST);
         if (!req.getPassword().equals(req.getConfirmPassword()))
             throw new CustomException("Confirm Password and Password must be same", HttpStatus.BAD_REQUEST);
-        User user = userMapper.dtoToEntity(req);
-        user=userRepo.save(user);
-        emailService.sendMail(user.getEmail(), "Account Registration",
-                "Your account has been successfully registered.");
+        User user = userRepo.save(userMapper.dtoToEntity(req));
+        if(req.getAddress()!=null){
+            req.getAddress().parallelStream().forEach(address->{
+                address.setUserId(user.getId());
+                addressService.saveAddress(address);
+            });
+        }
+        emailService.sendMail(user.getEmail(), "Account Registration", "Your account has been successfully registered.");
         return userMapper.entityToDto(user);
     }
 
@@ -62,14 +67,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PagewiseRes<UserDto> getAllUsersPagewise(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection) {
+    public PagewiseRes<UserDto> getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection, Boolean status) {
         Sort sort = null;
         if (sortDirection.equalsIgnoreCase("asc"))
             sort = Sort.by(sortBy).ascending();
         else if (sortDirection.equalsIgnoreCase("desc"))
             sort = Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-        Page<User> users = userRepo.findAllPagewise(pageable);
+        Page<User> users = userRepo.findAllPagewiseByIsActive(pageable,status);
         List<UserDto> res = users.stream().map(userMapper::entityToDto).collect(Collectors.toList());
         PagewiseRes<UserDto> pagewiseRes = new PagewiseRes<>();
         pagewiseRes.setRes(res);
@@ -84,11 +89,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateById(UserDto req) {
         User user = userRepo.findById(req.getId()).orElseThrow(() -> new CustomException("User Not Found", HttpStatus.NOT_FOUND));
-        user.setFirstName(req.getFirstName().trim());
-        user.setMiddleName(req.getMiddleName().trim());
-        user.setLastName(req.getLastName().trim());
-        user.setEmail(req.getEmail().trim());
-        user.setPhone(req.getPhone().trim());
+        user.setFirstName(req.getFirstName());
+        user.setMiddleName(req.getMiddleName());
+        user.setLastName(req.getLastName());
+        if(userRepo.existsByEmail(req.getEmail()))
+            throw new CustomException("Email already registered", HttpStatus.BAD_REQUEST);
+        user.setEmail(req.getEmail());
+        user.setPhone(req.getPhone());
         user.setUpdatedDate(LocalDate.now());
         return userMapper.entityToDto(userRepo.save(user));
     }
@@ -98,9 +105,10 @@ public class UserServiceImpl implements UserService {
         User user = userRepo.findById(id)
                 .orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
         user.setIsActive(false);
+        user.setUpdatedDate(LocalDate.now());
         userRepo.save(user);
-        emailService.sendMail(user.getEmail(), "Account Deletion", "Your account will be deleted within a week.");
-        return "User Deleted Successfully";
+        emailService.sendMail(user.getEmail(), "Account Deletion", "Your account will be deleted within a month. ");
+        return "Your account will be deleted within a month";
     }
 
 

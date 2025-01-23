@@ -11,41 +11,43 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserRestController {
 
     private final UserService userService;
 
     @Operation(summary = "Get user by ID")
-    @GetMapping("/{id}")
+    @GetMapping("/user/{id}")
     public ResponseEntity<?> getUser(@PathVariable("id") long id) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findById(id));
     }
 
     @Operation(summary = "Get all users")
-    @GetMapping
+    @GetMapping("/users")
     public ResponseEntity<?> getUsers(@RequestParam(required = false) Boolean status) {
         return ResponseEntity.ok().body(userService.getAllUsers(status));
     }
 
-    @GetMapping("/page-wise-users/{pageNumber}")
-    public ResponseEntity<?> getUsers(
+    @Operation(summary = "Get all users page wise")
+    @GetMapping("/users/{pageNumber}")
+    public ResponseEntity<?> getUsersPagewise(
             @PathVariable("pageNumber") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
             @RequestParam(value = "sortBy", defaultValue = AppConstants.SORT_BY, required = false) String sortBy,
-            @RequestParam(value = "sortDirection", defaultValue = AppConstants.SORT_DIRECTION, required = false) String sortDirection) {
-        return ResponseEntity.ok().body(userService.getAllUsersPagewise(pageNumber, pageSize, sortBy, sortDirection));
+            @RequestParam(value = "sortDirection", defaultValue = AppConstants.SORT_DIRECTION, required = false) String sortDirection,
+            @RequestParam(required = false) Boolean status) {
+        return ResponseEntity.ok().body(userService.getAllUsers(pageNumber, pageSize, sortBy, sortDirection,status));
     }
 
     @Operation(summary = "Update user")
-    @PutMapping
+    @PutMapping("/user")
     public ResponseEntity<?> updateUser(@Valid @RequestBody UserDto req) {
         return ResponseEntity.ok().body(userService.updateById(req));
     }
 
     @Operation(summary = "Delete user by ID")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("user/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable("id") long id) {
         return ResponseEntity.ok().body(userService.deleteById(id));
     }

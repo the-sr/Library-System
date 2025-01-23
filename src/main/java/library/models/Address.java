@@ -43,7 +43,12 @@ public class Address {
     @Column(name = "country")
     private String country;
 
+    @Column(name="user_id")
+    private Long userId;
+
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
     private User user;
 }

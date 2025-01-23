@@ -32,4 +32,6 @@ public class AddressDto {
     private String country;
 
     private Boolean isPerTempSame;
+
+    private Long userId;
 }

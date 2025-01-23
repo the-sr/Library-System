@@ -13,7 +13,7 @@ public interface UserService {
 
     List<UserDto> getAllUsers(Boolean status);
 
-    PagewiseRes<UserDto> getAllUsersPagewise(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection);
+    PagewiseRes<UserDto> getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection, Boolean status);
 
     String deleteById(long id);
 

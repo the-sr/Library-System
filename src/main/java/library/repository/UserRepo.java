@@ -28,6 +28,9 @@ public interface UserRepo extends JpaRepository<User, Long> {
     @Query(value = "Select * from users u where u.email= ?1", nativeQuery = true)
     Optional<User> findByUsername(String userName);
 
-    @Query(value = "select u from users u ", nativeQuery = true)
+    @Query(value = "select * from users u ", nativeQuery = true)
     Page<User> findAllPagewise(Pageable pageable);
+
+    @Query(value = "select * from users u WHERE CASE WHEN :status IS NOT NULL THEN u.is_active = :status ELSE TRUE END", nativeQuery = true)
+    Page<User> findAllPagewiseByIsActive(Pageable pageable, Boolean status);
 }

@@ -1,5 +1,6 @@
 package library.services.mappers;
 
+import library.enums.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -13,6 +14,7 @@ import library.projection.UserProjection;
 public interface UserMapper extends MapperClass<User, UserDto, UserProjection> {
 
     @Mapping(target = "password", qualifiedByName = "encodePassword")
+    @Mapping(target = "role", qualifiedByName = "setRoles")
     User dtoToEntity(UserDto userDto);
 
     @Mapping(target = "password", ignore = true)
@@ -24,5 +26,11 @@ public interface UserMapper extends MapperClass<User, UserDto, UserProjection> {
     @Named("encodePassword")
     default String encodePassword(String password) {
         return new BCryptPasswordEncoder().encode(password);
+    }
+
+    @Named("setRoles")
+    default Role setRoles(Role role){
+        if(role!=null) return role;
+        else return Role.MEMBER;
     }
 }

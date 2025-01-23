@@ -32,7 +32,6 @@ public class UserDto {
     @Length(min = 5, max = 15, message = "Password must be 5 to 15 character long")
     private String password;
 
-    @NotEmpty(message = "Confirm Password is required")
     private String confirmPassword;
 
     private Role role;

@@ -8,6 +8,7 @@ import library.repository.EmailConfigRepo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -18,6 +19,7 @@ import java.util.Properties;
 @RequiredArgsConstructor
 @Getter
 @Setter
+@Slf4j
 public class EmailService {
 
     private final EmailConfigRepo emailConfigRepo;
@@ -87,8 +89,9 @@ public class EmailService {
             message.setSentDate(new Date());
             Transport.send(message);
             status = true;
+            log.info("Email sent successfully to "+ receiver);
         } catch (Exception e) {
-            message = e.getMessage();
+            log.error("Error sending email "+ e.getMessage());
             status = false;
         }
         return status;

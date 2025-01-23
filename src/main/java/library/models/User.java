@@ -49,7 +49,7 @@ public class User {
     @Column(name = "updated_date")
     private LocalDate updatedDate;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     private List<Address> address;
 
     @Column(name = "is_active", columnDefinition = "boolean default false")

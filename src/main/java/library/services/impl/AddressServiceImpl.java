@@ -1,5 +1,6 @@
 package library.services.impl;
 
+import library.services.mappers.AddressMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,6 @@ import library.dto.AddressDto;
 import library.exception.CustomException;
 import library.models.Address;
 import library.repository.AddressRepo;
-import library.repository.UserRepo;
 import library.services.AddressService;
 import library.utils.TransferObject;
 
@@ -20,7 +20,12 @@ import java.util.Optional;
 public class AddressServiceImpl implements AddressService {
 
     private final AddressRepo addressRepo;
-    private final UserRepo userRepo;
+    private final AddressMapper addressMapper;
+
+    @Override
+    public void saveAddress(AddressDto req) {
+        addressRepo.save(addressMapper.dtoToEntity(req));
+    }
 
     @Override
     public List<AddressDto> getAddressByUserId(long userId) {
