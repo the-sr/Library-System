@@ -9,7 +9,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import library.config.security.AuthenticationFacade;
 import library.dto.UserDto;
 import library.dto.res.PagewiseRes;
 import library.exception.CustomException;
@@ -53,11 +52,6 @@ public class UserServiceImpl implements UserService {
     public UserDto findById(long id) {
         User user=userRepo.findById(id).orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
         return userMapper.entityToDto(user);
-    }
-
-    @Override
-    public UserDto findByEmail(String email) {
-        return userMapper.entityToDto(userRepo.findByEmail(email).orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND)));
     }
 
     @Override

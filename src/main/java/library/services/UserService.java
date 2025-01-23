@@ -3,7 +3,6 @@ package library.services;
 import java.util.List;
 
 import library.dto.UserDto;
-import library.dto.req.ResetPassReq;
 import library.dto.res.PagewiseRes;
 
 public interface UserService {
@@ -18,7 +17,5 @@ public interface UserService {
     String deleteById(long id);
 
     UserDto updateById(UserDto req);
-
-    UserDto findByEmail(String email);
 
 }

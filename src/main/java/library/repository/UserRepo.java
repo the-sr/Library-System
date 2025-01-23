@@ -19,17 +19,11 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
     Boolean existsByEmail(String email);
 
-    Optional<User> findByEmail(String email);
-
     @Query(value = "SELECT * FROM users u WHERE CASE WHEN :status IS NOT NULL THEN u.is_active = :status ELSE TRUE END", nativeQuery = true)
     List<User> findAllByIsActive(Boolean status);
 
-
     @Query(value = "Select * from users u where u.email= ?1", nativeQuery = true)
     Optional<User> findByUsername(String userName);
-
-    @Query(value = "select * from users u ", nativeQuery = true)
-    Page<User> findAllPagewise(Pageable pageable);
 
     @Query(value = "select * from users u WHERE CASE WHEN :status IS NOT NULL THEN u.is_active = :status ELSE TRUE END", nativeQuery = true)
     Page<User> findAllPagewiseByIsActive(Pageable pageable, Boolean status);
