@@ -1,11 +1,9 @@
 package library.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -31,6 +29,6 @@ public class Author {
     @Column(name = "phone")
     private String phone;
 
-    @ManyToMany(mappedBy = "authors")
-    private Set<Book> books;
+    @OneToMany(mappedBy = "author")
+    private List<BookAuthor> bookAuthor;
 }
