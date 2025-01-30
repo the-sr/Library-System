@@ -12,8 +12,13 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
+@Table(name = "book",indexes = {
+        @Index(name = "indexed_book_isbn", columnList = "isbn", unique = true),
+})
 public class Book {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "isbn", unique = true, nullable = false)
@@ -31,12 +36,9 @@ public class Book {
     @Column(name = "book_count")
     private int bookCount;
 
-    @ManyToMany
-    @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "author_id"))
-    private Set<Author> authors;
+    @OneToMany(mappedBy = "book")
+    private List<BookAuthor> bookAuthor;
 
-    @ManyToMany
-    @JoinTable(name = "book_genre", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    private List<Genre> genre;
+
 
 }
