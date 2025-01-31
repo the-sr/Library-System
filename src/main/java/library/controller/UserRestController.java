@@ -30,9 +30,9 @@ public class UserRestController {
     }
 
     @Operation(summary = "Get all users page wise")
-    @GetMapping("/users/{pageNumber}")
+    @GetMapping("/page-wise-users")
     public ResponseEntity<?> getUsersPagewise(
-            @PathVariable("pageNumber") Integer pageNumber,
+            @RequestParam("pageNumber") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
             @RequestParam(value = "sortBy", defaultValue = AppConstants.SORT_BY, required = false) String sortBy,
             @RequestParam(value = "sortDirection", defaultValue = AppConstants.SORT_DIRECTION, required = false) String sortDirection,
