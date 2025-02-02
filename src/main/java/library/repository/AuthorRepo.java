@@ -16,6 +16,5 @@ public interface AuthorRepo extends JpaRepository<Author, Long> {
     @Query(value = "select * from Author a where a.email= ?1", nativeQuery = true)
     Optional<Author> findByEmail(String email);
 
-    @Query(value = "select * from Author a where a.email= ?1", nativeQuery = true)
     Set<Author> findByBookId(Long bookId);
 }
