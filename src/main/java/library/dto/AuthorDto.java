@@ -12,11 +12,11 @@ import lombok.*;
 
 public class AuthorDto {
 
-    private long id;
+    private Long id;
     @NotNull(message = "First Name is required.")
-    private String firstname;
+    private String firstName;
     @NotNull(message = "First Name is required.")
-    private String lastname;
+    private String lastName;
     @Email(message = "Invalid Email Format, Please provide a valid email")
     private String email;
     private String phone;

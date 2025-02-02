@@ -1,6 +1,5 @@
 package library.services.mappers;
 
-import library.services.mappers.MapperInterface;
 import library.dto.BookDto;
 import library.models.Book;
 import org.mapstruct.Mapper;

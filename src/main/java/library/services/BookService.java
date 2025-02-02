@@ -7,7 +7,7 @@ import library.dto.res.PagewiseRes;
 import java.util.List;
 
 public interface BookService {
-    BookDto add(BookDto req);
+    String add(BookDto req);
 
     BookDto findById(long id);
 

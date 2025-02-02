@@ -31,7 +31,7 @@ public class BookDto {
     private int bookCount;
 
     @NotNull(message = "Author Details is required")
-    private Set<AuthorDto> authors;
+    private List<AuthorDto> authors;
 
     @NotNull(message = "At least 1 genre is required")
     private List<GenreDto> genre;

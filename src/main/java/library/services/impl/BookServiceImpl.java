@@ -30,30 +30,30 @@ public class BookServiceImpl implements BookService {
     private final BookGenreRepo bookGenreRepo;
 
     @Override
-    public BookDto add(BookDto req) {
+    public String add(BookDto req) {
         Book book = bookRepo.save(bookMapper.dtoToEntity(req));
-        if(req.getAuthors()!=null && !req.getAuthors().isEmpty()){
-            req.getAuthors().forEach(author->{
-                author=authorService.add(author);
-                BookAuthor bookAuthor=BookAuthor.builder()
-                        .bookId(book.getId())
-                        .authorId(author.getId())
-                        .build();
-                bookAuthorRepo.save(bookAuthor);
-            });
-        }
+            if(req.getAuthors()!=null && !req.getAuthors().isEmpty()){
+                req.getAuthors().parallelStream().forEach(author->{
+                    author=authorService.add(author);
+                    BookAuthor bookAuthor=BookAuthor.builder()
+                            .bookId(book.getId())
+                            .authorId(author.getId())
+                            .build();
+                    bookAuthorRepo.save(bookAuthor);
+                });
+            }
 
-        if(req.getGenre()!=null && !req.getGenre().isEmpty()){
-            req.getGenre().forEach(genre->{
-                genre=genreService.add(genre);
-                BookGenre bookGenre=BookGenre.builder()
-                        .bookId(book.getId())
-                        .genreId(genre.getId())
-                        .build();
-                bookGenreRepo.save(bookGenre);
-            });
-        }
-        return null;
+            if(req.getGenre()!=null && !req.getGenre().isEmpty()){
+                req.getGenre().parallelStream().forEach(genre->{
+                    genre=genreService.add(genre);
+                    BookGenre bookGenre=BookGenre.builder()
+                            .bookId(book.getId())
+                            .genreId(genre.getId())
+                            .build();
+                    bookGenreRepo.save(bookGenre);
+                });
+            }
+        return "Book added successfully";
     }
 
     @Override
