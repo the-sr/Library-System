@@ -5,7 +5,7 @@ import library.models.Address;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface AddressMapper extends MapperClass<Address, AddressDto>{
+public interface AddressMapper extends MapperInterface<Address, AddressDto> {
 
     Address dtoToEntity(AddressDto addressDto);
 

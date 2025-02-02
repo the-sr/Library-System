@@ -1,11 +1,12 @@
 package library.services.mappers;
 
+import library.services.mappers.MapperInterface;
 import library.dto.BookDto;
 import library.models.Book;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface BookMapper extends MapperClass<Book, BookDto> {
+public interface BookMapper extends MapperInterface<Book, BookDto> {
 
     Book dtoToEntity(BookDto bookDto);
 

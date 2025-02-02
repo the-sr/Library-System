@@ -2,6 +2,7 @@ package library.services.mappers;
 
 import library.enums.Role;
 import org.mapstruct.Mapper;
+import library.services.mappers.MapperInterface;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,7 +11,7 @@ import library.dto.UserDto;
 import library.models.User;
 
 @Mapper(componentModel = "spring")
-public interface UserMapper extends MapperClass<User, UserDto> {
+public interface UserMapper extends MapperInterface<User, UserDto> {
 
     @Mapping(target = "password", qualifiedByName = "encodePassword")
     @Mapping(target = "role", qualifiedByName = "setRoles")
@@ -26,8 +27,10 @@ public interface UserMapper extends MapperClass<User, UserDto> {
     }
 
     @Named("setRoles")
-    default Role setRoles(Role role){
-        if(role!=null) return role;
-        else return Role.MEMBER;
+    default Role setRoles(Role role) {
+        if (role != null)
+            return role;
+        else
+            return Role.MEMBER;
     }
 }
