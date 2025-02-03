@@ -8,7 +8,6 @@ import library.exception.CustomException;
 import library.models.Book;
 import library.models.BookAuthor;
 import library.models.BookGenre;
-import library.models.Genre;
 import library.repository.BookAuthorRepo;
 import library.repository.BookGenreRepo;
 import library.repository.BookRepo;
@@ -48,26 +47,8 @@ public class BookServiceImpl implements BookService {
     @Override
     public String add(BookDto req) {
         Book book = bookRepo.save(bookMapper.dtoToEntity(req));
-        if (req.getAuthors() != null && !req.getAuthors().isEmpty()) {
-            req.getAuthors().parallelStream().forEach(author -> {
-                author = authorService.add(author);
-                BookAuthor bookAuthor = BookAuthor.builder()
-                        .bookId(book.getId())
-                        .authorId(author.getId())
-                        .build();
-                bookAuthorRepo.save(bookAuthor);
-            });
-        }
-        if (req.getGenre() != null && !req.getGenre().isEmpty()) {
-            req.getGenre().parallelStream().forEach(genre -> {
-                genre = genreService.add(genre);
-                BookGenre bookGenre = BookGenre.builder()
-                        .bookId(book.getId())
-                        .genreId(genre.getId())
-                        .build();
-                bookGenreRepo.save(bookGenre);
-            });
-        }
+        saveBookAuthor(book.getId(),req.getAuthors());
+        saveBookGenre(book.getId(),req.getGenre());
         return "Book added successfully";
     }
 
@@ -84,7 +65,6 @@ public class BookServiceImpl implements BookService {
     public List<BookDto> findByTitle(String title) {
         List<Book> bookList = bookRepo.findByTitle(title);
         List<BookDto> res = new ArrayList<>();
-
         if (bookList != null && !bookList.isEmpty()) {
             bookList.parallelStream().forEach(book -> {
                 BookDto bookDto = bookMapper.entityToDto(book);
@@ -194,25 +174,63 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public String addBookAuthor(Long bookId, AuthorDto req) {
-        if(bookAuthorRepo.existsById(req.getId()))
-            throw new CustomException("Author not found", HttpStatus.NOT_FOUND);
-        return "";
+    public String addBookAuthor(Long bookId, List<AuthorDto> req) {
+        if(!bookRepo.existsById(bookId))
+            throw new CustomException("Book not found",HttpStatus.NOT_FOUND);
+        saveBookAuthor(bookId,req);
+        return "Author added to the book successfully";
     }
 
+    @Transactional
     @Override
     public String removeBookAuthor(Long bookId, Long authorId) {
-        return "";
+        if(!bookRepo.existsById(bookId))
+            throw new CustomException("Book not found",HttpStatus.NOT_FOUND);
+        bookAuthorRepo.deleteByBookIdAndAuthorId(bookId,authorId);
+        return "Author removed from the book successfully";
     }
 
     @Override
-    public String addBookGenre(Long bookId, GenreDto req) {
-        return "";
+    public String addBookGenre(Long bookId, List<GenreDto> req) {
+        if(!bookRepo.existsById(bookId))
+            throw new CustomException("Book not found",HttpStatus.NOT_FOUND);
+        saveBookGenre(bookId,req);
+        return "Genre added to the book successfully";
     }
 
+    @Transactional
     @Override
     public String removeBookGenre(Long bookId, Long genreId) {
-        return "";
+        if(!bookRepo.existsById(bookId))
+            throw new CustomException("Book not found",HttpStatus.NOT_FOUND);
+        bookGenreRepo.deleteByBookIdAndGenreId(bookId,genreId);
+        return "Genre removed from the book successfully";
+    }
+
+    private void saveBookAuthor(Long bookId,List<AuthorDto> authorDtoList){
+        if(authorDtoList!=null && !authorDtoList.isEmpty()){
+            authorDtoList.parallelStream().forEach(author->{
+                author=authorService.add(author);
+                BookAuthor bookAuthor=BookAuthor.builder()
+                        .bookId(bookId)
+                        .authorId(author.getId())
+                        .build();
+                bookAuthorRepo.save(bookAuthor);
+            });
+        }
+    }
+
+    private void saveBookGenre(Long bookId, List<GenreDto> genreDtoList){
+        if(genreDtoList!=null && !genreDtoList.isEmpty()){
+            genreDtoList.parallelStream().forEach(genre->{
+                genre=genreService.add(genre);
+                BookGenre bookGenre=BookGenre.builder()
+                        .bookId(bookId)
+                        .genreId(genre.getId())
+                        .build();
+                bookGenreRepo.save(bookGenre);
+            });
+        }
     }
 
     private List<AuthorDto> getAuthorDtoList(BookDto bookDto) {

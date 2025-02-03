@@ -15,4 +15,6 @@ public interface BookAuthorRepo extends JpaRepository<BookAuthor,Long> {
 
     void deleteAllByBookId(Long bookId);
 
+    void deleteByBookIdAndAuthorId(Long bookId, Long authorId);
+
 }

@@ -14,4 +14,6 @@ public interface BookGenreRepo extends JpaRepository<BookGenre,Long> {
     List<BookGenre> findAllByGenreId(Long genreId);
 
     void deleteAllByBookId(Long bookId);
+
+    void deleteByBookIdAndGenreId(Long bookId, Long genreId);
 }
