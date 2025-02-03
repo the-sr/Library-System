@@ -8,6 +8,7 @@ import library.exception.CustomException;
 import library.models.Book;
 import library.models.BookAuthor;
 import library.models.BookGenre;
+import library.models.Genre;
 import library.repository.BookAuthorRepo;
 import library.repository.BookGenreRepo;
 import library.repository.BookRepo;
@@ -72,8 +73,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto findById(Long id) {
-        Book book=bookRepo.findById(id).orElseThrow(()->new CustomException("Book not found", HttpStatus.NOT_FOUND));
-        BookDto res=bookMapper.entityToDto(book);
+        Book book = bookRepo.findById(id).orElseThrow(() -> new CustomException("Book not found", HttpStatus.NOT_FOUND));
+        BookDto res = bookMapper.entityToDto(book);
         res.setAuthors(getAuthorDtoList(res));
         res.setGenre(getGenreDtoList(res));
         return res;
@@ -81,12 +82,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> findByTitle(String title) {
-        List<Book> bookList=bookRepo.findByTitle(title);
-        List<BookDto> res=new ArrayList<>();
+        List<Book> bookList = bookRepo.findByTitle(title);
+        List<BookDto> res = new ArrayList<>();
 
-        if(bookList!=null && !bookList.isEmpty()){
+        if (bookList != null && !bookList.isEmpty()) {
             bookList.parallelStream().forEach(book -> {
-                BookDto bookDto=bookMapper.entityToDto(book);
+                BookDto bookDto = bookMapper.entityToDto(book);
                 bookDto.setAuthors(getAuthorDtoList(bookDto));
                 bookDto.setGenre(getGenreDtoList(bookDto));
                 res.add(bookDto);
@@ -97,13 +98,13 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Set<BookDto> findByAuthor(String authorName) {
-        List<AuthorDto> authorDtoList=authorService.getByAuthorName(authorName);
-        Set<BookDto> res=new HashSet<>();
-        if(authorDtoList!=null && !authorDtoList.isEmpty()){
+        List<AuthorDto> authorDtoList = authorService.getByAuthorName(authorName);
+        Set<BookDto> res = new HashSet<>();
+        if (authorDtoList != null && !authorDtoList.isEmpty()) {
             authorDtoList.parallelStream().forEach(author -> {
-                List<BookAuthor> bookAuthorList=bookAuthorRepo.findAllByAuthorId(author.getId());
+                List<BookAuthor> bookAuthorList = bookAuthorRepo.findAllByAuthorId(author.getId());
                 bookAuthorList.parallelStream().forEach(bookAuthor -> {
-                    BookDto bookDto=bookMapper.entityToDto(bookAuthor.getBook());
+                    BookDto bookDto = bookMapper.entityToDto(bookAuthor.getBook());
                     bookDto.setAuthors(getAuthorDtoList(bookDto));
                     bookDto.setGenre(getGenreDtoList(bookDto));
                     res.add(bookDto);
@@ -115,13 +116,13 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Set<BookDto> findByGenre(String genreName) {
-        List<GenreDto> genreDtoList=genreService.getByGenreName(genreName);
-        Set<BookDto> res=new HashSet<>();
-        if(genreDtoList!=null && !genreDtoList.isEmpty()){
+        List<GenreDto> genreDtoList = genreService.getByGenreName(genreName);
+        Set<BookDto> res = new HashSet<>();
+        if (genreDtoList != null && !genreDtoList.isEmpty()) {
             genreDtoList.parallelStream().forEach(genre -> {
-                List<BookGenre> bookGenreList=bookGenreRepo.findAllByGenreId(genre.getId());
+                List<BookGenre> bookGenreList = bookGenreRepo.findAllByGenreId(genre.getId());
                 bookGenreList.parallelStream().forEach(bookGenre -> {
-                    BookDto bookDto=bookMapper.entityToDto(bookGenre.getBook());
+                    BookDto bookDto = bookMapper.entityToDto(bookGenre.getBook());
                     bookDto.setGenre(getGenreDtoList(bookDto));
                     bookDto.setAuthors(getAuthorDtoList(bookDto));
                     res.add(bookDto);
@@ -133,11 +134,11 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> getAllBooks() {
-        List<Book> bookList=bookRepo.findAll();
-        List<BookDto>res=new ArrayList<>();
-        if(!bookList.isEmpty()){
-            bookList.parallelStream().forEach(book->{
-                BookDto bookDto=bookMapper.entityToDto(book);
+        List<Book> bookList = bookRepo.findAll();
+        List<BookDto> res = new ArrayList<>();
+        if (!bookList.isEmpty()) {
+            bookList.parallelStream().forEach(book -> {
+                BookDto bookDto = bookMapper.entityToDto(book);
                 bookDto.setAuthors(getAuthorDtoList(bookDto));
                 bookDto.setGenre(getGenreDtoList(bookDto));
                 res.add(bookDto);
@@ -154,10 +155,10 @@ public class BookServiceImpl implements BookService {
         else if (sortDirection.equalsIgnoreCase("desc"))
             sort = Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-        Page<Book> books=bookRepo.findAll(pageable);
-        List<BookDto> bookDtoList=new ArrayList<>();
+        Page<Book> books = bookRepo.findAll(pageable);
+        List<BookDto> bookDtoList = new ArrayList<>();
         books.stream().forEach(book -> {
-            BookDto bookDto=bookMapper.entityToDto(book);
+            BookDto bookDto = bookMapper.entityToDto(book);
             bookDto.setAuthors(getAuthorDtoList(bookDto));
             bookDto.setGenre(getGenreDtoList(bookDto));
             bookDtoList.add(bookDto);
@@ -182,13 +183,41 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto updateById(BookDto req) {
-        return null;
+    public String updateById(BookDto req) {
+        Book book = bookRepo.findById(req.getId()).orElseThrow(() -> new CustomException("Book not found", HttpStatus.NOT_FOUND));
+        book.setIsbn(req.getIsbn());
+        book.setTitle(req.getTitle());
+        book.setEdition(req.getEdition());
+        book.setPublisher(req.getPublisher());
+        book.setBookCount(req.getBookCount());
+        return "Book updated successfully";
+    }
+
+    @Override
+    public String addBookAuthor(Long bookId, AuthorDto req) {
+        if(bookAuthorRepo.existsById(req.getId()))
+            throw new CustomException("Author not found", HttpStatus.NOT_FOUND);
+        return "";
+    }
+
+    @Override
+    public String removeBookAuthor(Long bookId, Long authorId) {
+        return "";
+    }
+
+    @Override
+    public String addBookGenre(Long bookId, GenreDto req) {
+        return "";
+    }
+
+    @Override
+    public String removeBookGenre(Long bookId, Long genreId) {
+        return "";
     }
 
     private List<AuthorDto> getAuthorDtoList(BookDto bookDto) {
-        List<BookAuthor> bookAuthorList=bookAuthorRepo.findAllByBookId(bookDto.getId());
-        List<AuthorDto> authorDtoList=new ArrayList<>();
+        List<BookAuthor> bookAuthorList = bookAuthorRepo.findAllByBookId(bookDto.getId());
+        List<AuthorDto> authorDtoList = new ArrayList<>();
         bookAuthorList.parallelStream().forEach(bookAuthor -> {
             authorDtoList.add(authorMapper.entityToDto(bookAuthor.getAuthor()));
         });
@@ -196,8 +225,8 @@ public class BookServiceImpl implements BookService {
     }
 
     private List<GenreDto> getGenreDtoList(BookDto bookDto) {
-        List<BookGenre> bookGenreList=bookGenreRepo.findAllByBookId(bookDto.getId());
-        List<GenreDto> genreDtoList=new ArrayList<>();
+        List<BookGenre> bookGenreList = bookGenreRepo.findAllByBookId(bookDto.getId());
+        List<GenreDto> genreDtoList = new ArrayList<>();
         bookGenreList.parallelStream().forEach(bookGenre -> {
             genreDtoList.add(genreMapper.entityToDto(bookGenre.getGenre()));
         });

@@ -1,6 +1,8 @@
 package library.services;
 
+import library.dto.AuthorDto;
 import library.dto.BookDto;
+import library.dto.GenreDto;
 import library.dto.UserDto;
 import library.dto.res.PagewiseRes;
 
@@ -24,5 +26,13 @@ public interface BookService {
 
     String removeById(Long id);
 
-    BookDto updateById(BookDto req);
+    String updateById(BookDto req);
+
+    String addBookAuthor(Long bookId, AuthorDto req);
+
+    String removeBookAuthor(Long bookId, Long authorId);
+
+    String addBookGenre(Long bookId, GenreDto req);
+
+    String removeBookGenre(Long bookId, Long genreId);
 }
