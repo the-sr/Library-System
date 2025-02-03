@@ -14,7 +14,9 @@ import java.util.Set;
 @Entity
 
 public class Author {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "first_name")

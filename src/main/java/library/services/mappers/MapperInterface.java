@@ -1,6 +1,6 @@
 package library.services.mappers;
 
-public interface MapperClass<E, D> {
+public interface MapperInterface<E, D> {
 
     E dtoToEntity(D d);
 

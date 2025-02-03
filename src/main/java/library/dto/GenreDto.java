@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 public class GenreDto {
 
-    private long id;
+    private Long id;
 
     @NotNull(message = "Genre name is required")
     private String name;
