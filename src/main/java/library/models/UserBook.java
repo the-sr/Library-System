@@ -15,25 +15,39 @@ import java.time.LocalDate;
 public class UserBook {
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Book book;
-
-    @ManyToOne
-    private User user;
-
+    @Column(name="borrowed_date")
     @Temporal(TemporalType.DATE)
-    private LocalDate borrowDate;
+    private LocalDate borrowedDate;
 
+    @Column(name="returned_date")
     @Temporal(TemporalType.DATE)
     private LocalDate returnDate;
 
+    @Column(name = "expected_return_date")
     @Temporal(TemporalType.DATE)
     private LocalDate expectedReturnDate;
 
+    @Column(name = "is_active")
     private boolean isActive;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "book_id")
+    private Long bookId;
+
+    @Setter(AccessLevel.NONE)
+    @ManyToOne
+    @JoinColumn(name = "user_id",referencedColumnName = "id",insertable = false, updatable = false)
+    private User user;
+
+    @Setter(AccessLevel.NONE)
+    @ManyToOne
+    @JoinColumn(name = "book_id",referencedColumnName = "id",insertable = false, updatable = false)
+    private Book book;
 
     @PrePersist
     protected void isActive() {

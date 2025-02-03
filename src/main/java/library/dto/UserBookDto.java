@@ -10,11 +10,22 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class UserBookDto {
+
     private Long id;
-    private UserDto user;
-    private BookDto book;
+
     private LocalDate borrowedDate;
-    private LocalDate returnedDate;
+
+    private LocalDate returnDate;
+
     private LocalDate expectedReturnDate;
-    private Boolean isActive;
+
+    private boolean isActive;
+
+    private Long userId;
+
+    private Long bookId;
+
+    private UserDto user;
+
+    private BookDto book;
 }
