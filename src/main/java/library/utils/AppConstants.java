@@ -7,4 +7,7 @@ public class AppConstants {
     public static final String SORT_BY = "id";
     public static final String SORT_DIRECTION = "asc";
 
+    public static final Integer BORROW_LIMIT = 8;
+    public static final Long BORROW_MONTH_LIMIT=6L;
+
 }
