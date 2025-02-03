@@ -7,5 +7,6 @@ import java.util.List;
 public interface AuthorService {
 
     AuthorDto add(AuthorDto req);
-    List<AuthorDto> getAuthorByBookId(Long bookId);
+    AuthorDto getById(Long id);
+    List<AuthorDto> getByAuthorName(String authorName);
 }

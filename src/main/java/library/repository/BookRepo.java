@@ -17,16 +17,9 @@ public interface BookRepo extends JpaRepository<Book, Long> {
     @Query(value = "Select coalesce(max(id),0)+1 from book ", nativeQuery = true)
     long findNextId();
 
-    @Override
-    Page<Book> findAll(Pageable pageable);
-
-    @Query(value = "select * from Book b where b.title= ?1", nativeQuery = true)
+    @Query(value = " SELECT b.* " +
+            " FROM book b " +
+            " WHERE LOWER(b.title) LIKE LOWER(CONCAT('%', :title, '%')) ", nativeQuery = true)
     List<Book> findByTitle(String title);
-
-    @Query(value = "select * from Book b where b.title= ?1", nativeQuery = true)
-    List<Book> findByAuthor(String author);
-
-    @Query(value = "select * from Book b where b.title= ?1", nativeQuery = true)
-    Optional<Book> findByISBN(String isbn);
 
 }

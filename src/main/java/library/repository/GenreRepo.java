@@ -18,4 +18,9 @@ public interface GenreRepo extends JpaRepository<Genre, Long> {
     @Query(value = "select * from Genre g where g.name= :name", nativeQuery = true)
     Optional<Genre> findByName(String name);
 
+    @Query(value = " select g.* " +
+            " from genre g " +
+            " where lower(g.name) like lower(concat('%',:genreName,'%')) ", nativeQuery = true)
+    List<Genre> findAllByGenreName(String genreName);
+
 }

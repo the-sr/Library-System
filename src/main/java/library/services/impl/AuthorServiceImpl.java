@@ -1,8 +1,10 @@
 package library.services.impl;
 
+import library.exception.CustomException;
 import library.models.Author;
 import library.repository.AuthorRepo;
 import library.services.mappers.AuthorMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import library.dto.AuthorDto;
@@ -28,9 +30,16 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<AuthorDto> getAuthorByBookId(Long bookId) {
-        Set<Author> authorSet=authorRepo.findByBookId(bookId);
-        return authorSet.parallelStream().map(authorMapper::entityToDto).collect(Collectors.toList());
+    public AuthorDto getById(Long id) {
+        Author author=authorRepo.findById(id).orElseThrow(()->new CustomException("Author not found", HttpStatus.NOT_FOUND));
+        return authorMapper.entityToDto(author);
     }
+
+    @Override
+    public List<AuthorDto> getByAuthorName(String authorName) {
+        List<Author> authorList=authorRepo.findByAuthorName(authorName);
+        return authorList.parallelStream().map(authorMapper::entityToDto).collect(Collectors.toList());
+    }
+
 
 }

@@ -9,6 +9,10 @@ import java.util.List;
 @Repository
 public interface BookAuthorRepo extends JpaRepository<BookAuthor,Long> {
 
-    List<BookAuthor> findByBookId(Long bookId);
+    List<BookAuthor> findAllByBookId(Long bookId);
+
+    List<BookAuthor> findAllByAuthorId(Long authorId);
+
+    void deleteAllByBookId(Long bookId);
 
 }
