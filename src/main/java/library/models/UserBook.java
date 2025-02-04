@@ -1,6 +1,7 @@
 package library.models;
 
 import jakarta.persistence.*;
+import library.enums.RequestType;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -31,7 +32,14 @@ public class UserBook {
     private LocalDate expectedReturnDate;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private Boolean isActive;
+
+    @Column(name = "fine_amount")
+    private Double fineAmount;
+
+    @Column(name = "request_type")
+    @Enumerated(EnumType.STRING)
+    private RequestType requestType;
 
     @Column(name = "user_id")
     private Long userId;

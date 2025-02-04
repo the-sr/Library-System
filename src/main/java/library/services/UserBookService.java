@@ -12,7 +12,5 @@ public interface UserBookService {
 
     UserBookDto getById(Long userBookId);
 
-    List<UserBookDto> getByUserId(Long userId);
-
-    List<UserBookDto> getAll();
+    List<UserBookDto> getAll(Long userId, String requestType, Boolean isActive);
 }

@@ -62,5 +62,6 @@ public class User {
     private void onCreate() {
         isActive = true;
         createdDate= LocalDate.now();
+        borrowedBookCount=0;
     }
 }

@@ -15,15 +15,13 @@ public interface UserBookRepo extends JpaRepository<UserBook, Long> {
     @Query(value = "Select coalesce(max(id),0)+1 from user_book ", nativeQuery = true)
     long findNextId();
 
-    @Query(value = "Select ub.* from user_book ub where ub.isActive=true", nativeQuery = true)
-    List<UserBook> getAllUserBooks();
+    Optional<UserBook> findByUserIdAndBookId(Long userId, Long bookId);
 
-    @Query(value = "select ub.* from user_book ub where ub.user_id = ?1 AND ub.book_id = ?2;", nativeQuery = true)
-    Optional<UserBook> findByUserIdAndBookId(long userId, long bookId);
+    @Query(value = " select ub.* " +
+            " from user_book ub " +
+            " where case when :userId is not null then ub.user_id = :userId else true end " +
+            "  and case when :requestType is not null then ub.request_type = :requestType else true end " +
+            "  and case when :isActive is not null then ub.is_active = :isActive else true end ",nativeQuery = true)
+    List<UserBook> findAll(Long userId, String requestType, Boolean isActive);
 
-    @Query(value = "select ub.* from user_book ub where ub.user_id = ?1;", nativeQuery = true)
-    List<UserBook> findByUserId(long userId);
-
-    @Query(value = "select ub.* from user_book ub where ub.book_id = ?1;", nativeQuery = true)
-    List<UserBook> findByUserIdAndBookId(long bookId);
 }

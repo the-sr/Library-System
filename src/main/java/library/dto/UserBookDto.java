@@ -19,7 +19,11 @@ public class UserBookDto {
 
     private LocalDate expectedReturnDate;
 
-    private boolean isActive;
+    private Boolean isActive;
+
+    private Double fineAmount;
+
+    private String requestType;
 
     private Long userId;
 
