@@ -9,8 +9,8 @@ import library.models.UserBook;
 import library.repository.BookRepo;
 import library.repository.UserRepo;
 import library.services.UserBookService;
-import library.utils.AppConstants;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -25,21 +25,23 @@ public class UserBookServiceImpl implements UserBookService {
     private final UserRepo userRepo;
     private final BookRepo bookRepo;
 
-    private static final Integer BORROW_LIMIT = AppConstants.BORROW_LIMIT;
-    private static final long BORROW_MONTH_LIMIT = AppConstants.BORROW_MONTH_LIMIT;
+    @Value("${default-borrow-limit}")
+    private Integer borrowLimit;
+    @Value("${default-borrow-period-limit}")
+    private Long borrowPeriodLimit;
 
 
     @Override
     public String borrowBook(Long bookId) {
         long userId = facade.getAuthentication().getUserId();
         User user = userRepo.findById(userId).orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
-        if (user.getBorrowedBookCount() >= AppConstants.BORROW_LIMIT)
-            throw new CustomException("Maximum borrow limit is " + BORROW_LIMIT, HttpStatus.BAD_REQUEST);
+        if (user.getBorrowedBookCount() >= borrowLimit)
+            throw new CustomException("Maximum borrow limit is " + borrowLimit, HttpStatus.BAD_REQUEST);
         Book book = bookRepo.findById(bookId).orElseThrow(() -> new CustomException("Book not found", HttpStatus.NOT_FOUND));
         if (book.getBookCount() >= 1) {
             UserBook userBook = UserBook.builder()
                     .borrowedDate(LocalDate.now())
-                    .expectedReturnDate(LocalDate.now().plusMonths(BORROW_MONTH_LIMIT))
+                    .expectedReturnDate(LocalDate.now().plusMonths(borrowPeriodLimit))
                     .userId(userId)
                     .bookId(book.getId())
                     .build();

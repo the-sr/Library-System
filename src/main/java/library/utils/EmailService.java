@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -26,10 +27,15 @@ public class EmailService {
 
     private String message = "Sent";
     private boolean status;
+    @Value("${email-sender}")
     private String sender;
+    @Value("${email-password}")
     private String password;
+    @Value("${email-smtpHost}")
     private String smtpHost;
+    @Value("${email-smtpPort}")
     private String smtpPort;
+    @Value("${email-emailSignature}")
     private String emailSignature;
 
     @PostConstruct
@@ -50,11 +56,6 @@ public class EmailService {
     }
 
     private void use() {
-        sender = "99484d5e69fb31";
-        password = "43812bc9c1dd51";
-        smtpHost = "sandbox.smtp.mailtrap.io";
-        smtpPort = "2525";
-        emailSignature = "Regards,<br>Team Demo";
         EmailConfig emailConfig = EmailConfig.builder()
                 .id(1L)
                 .sender(sender)
