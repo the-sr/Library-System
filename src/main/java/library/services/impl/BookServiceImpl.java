@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +44,7 @@ public class BookServiceImpl implements BookService {
     private final BookGenreRepo bookGenreRepo;
     private final AuthorMapper authorMapper;
     private final GenreMapper genreMapper;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     public String add(BookDto req) {
@@ -229,6 +231,11 @@ public class BookServiceImpl implements BookService {
                         .genreId(genre.getId())
                         .build();
                 bookGenreRepo.save(bookGenre);
+                Set<Long> userIds=bookGenreRepo.findAllIdsByGenreId(genre.getId());
+                String notificationMessage="New book of genre "+genre.getName()+" is available in the library";
+                userIds.parallelStream().forEach(userId->{
+                    messagingTemplate.convertAndSendToUser(userId.toString(),"/messages",notificationMessage);
+                });
             });
         }
     }
