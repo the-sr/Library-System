@@ -40,7 +40,7 @@ public class UserBookServiceImpl implements UserBookService {
 
     @Transactional
     @Override
-    public String borrowBook(Long bookId) {
+    public String borrowRequest(Long bookId) {
         long userId = facade.getAuthentication().getUserId();
         User user = userRepo.findById(userId).orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
         if (user.getBorrowedBookCount() >= borrowLimit)
@@ -51,8 +51,6 @@ public class UserBookServiceImpl implements UserBookService {
         if (book.getBookCount() < 1)
             throw new CustomException("Book is out of stock", HttpStatus.BAD_REQUEST);
         UserBook userBook = UserBook.builder()
-                .borrowedDate(LocalDate.now())
-                .expectedReturnDate(LocalDate.now().plusMonths(borrowPeriodLimit))
                 .requestType(RequestType.BORROW)
                 .userId(userId)
                 .bookId(book.getId())
@@ -66,7 +64,7 @@ public class UserBookServiceImpl implements UserBookService {
     }
 
     @Override
-    public String returnBook(Long bookId) {
+    public String returnRequest(Long bookId) {
         long userId = facade.getAuthentication().getUserId();
         UserBook userBook=userBookRepo.findByUserIdAndBookId(userId,bookId).orElseThrow(() -> new CustomException("You haven't borrowed this book yet", HttpStatus.BAD_REQUEST));
         double fineAmount=0;
@@ -89,5 +87,29 @@ public class UserBookServiceImpl implements UserBookService {
     public List<UserBookDto> getAll(Long userId, String requestType, Boolean isActive) {
         List<UserBook> userBookList=userBookRepo.findAll(userId,requestType,isActive);
         return userBookList.parallelStream().map(userBookMapper::entityToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public String handelBorrowRequest(Long userBookId) {
+        UserBook userBook=userBookRepo.findById(userBookId).orElseThrow(()->new CustomException("User Book not found",HttpStatus.NOT_FOUND));
+        userBook.setBorrowedDate(LocalDate.now());
+        userBook.setExpectedReturnDate(LocalDate.now().plusMonths(borrowPeriodLimit));
+        userBookRepo.save(userBook);
+        return "Book successfully borrowed";
+    }
+
+    @Transactional
+    @Override
+    public String handelReturnRequest(Long userBookId) {
+        UserBook userBook=userBookRepo.findById(userBookId).orElseThrow(()->new CustomException("User Book not found",HttpStatus.NOT_FOUND));
+        userBook.setIsActive(false);
+        userBookRepo.save(userBook);
+        User user=userRepo.findById(userBook.getUserId()).get();
+        user.setBorrowedBookCount(user.getBorrowedBookCount()-1);
+        userRepo.save(user);
+        Book book=bookRepo.findById(userBook.getBookId()).get();
+        book.setBookCount(book.getBookCount()+1);
+        bookRepo.save(book);
+        return "Book successfully returned";
     }
 }

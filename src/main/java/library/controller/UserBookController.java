@@ -14,15 +14,15 @@ public class UserBookController {
     private final UserBookService userBookService;
 
     @Operation(summary = "Sent book borrow request")
-    @PostMapping("/borrow-book")
-    public ResponseEntity<?> borrowBook(@RequestParam Long bookId){
-        return ResponseEntity.ok().body(userBookService.borrowBook(bookId));
+    @PostMapping("/borrow-request")
+    public ResponseEntity<?> borrowRequest(@RequestParam Long bookId){
+        return ResponseEntity.ok().body(userBookService.borrowRequest(bookId));
     }
 
     @Operation(summary = "Sent book return request")
-    @PostMapping("/return-book")
-    public ResponseEntity<?> returnBook(@RequestParam Long bookId){
-        return ResponseEntity.ok().body(userBookService.returnBook(bookId));
+    @PostMapping("/return-request")
+    public ResponseEntity<?> returnRequest(@RequestParam Long bookId){
+        return ResponseEntity.ok().body(userBookService.returnRequest(bookId));
     }
 
     @Operation(summary = "Get user book details")
@@ -38,5 +38,15 @@ public class UserBookController {
             @RequestParam(required = false) String requestType,
             @RequestParam(required = false) Boolean isActive){
         return ResponseEntity.ok(userBookService.getAll(userId,requestType,isActive));
+    }
+
+    @PutMapping("/user-book/handle-borrow-request")
+    public ResponseEntity<?> handleBorrowRequest(@RequestParam Long userBookId){
+        return ResponseEntity.ok().body(userBookService.handelBorrowRequest(userBookId));
+    }
+
+    @PutMapping("/user-book/handle-return-request")
+    public ResponseEntity<?> handleReturnRequest(@RequestParam Long userBookId){
+        return ResponseEntity.ok().body(userBookService.handelReturnRequest(userBookId));
     }
 }
