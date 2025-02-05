@@ -60,7 +60,7 @@ public class UserBookServiceImpl implements UserBookService {
         userBookRepo.save(userBook);
         book.setBookCount(book.getBookCount() - 1);
         bookRepo.save(book);
-        return "Book borrow requested successfully, please visit library to pick your book";
+        return "Your book borrow request was successful. Please visit the library to pick up your book.";
     }
 
     @Override
@@ -74,8 +74,8 @@ public class UserBookServiceImpl implements UserBookService {
         userBook.setRequestType(RequestType.RETURN);
         userBookRepo.save(userBook);
         if(fineAmount>0){
-            return "Book return requested successfully, please visit library with fine amount to return the book";
-        }else return "Book return requested successfully, please visit library to return book";
+            return "Your book return request was successful. Please visit the library with fine amount Rs."+fineAmount+" to return the book";
+        }else return "Your book return request was successful. Please visit the library to return the book";
     }
 
     @Override

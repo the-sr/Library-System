@@ -2,7 +2,6 @@ package library.services.mappers;
 
 import library.enums.Role;
 import org.mapstruct.Mapper;
-import library.services.mappers.MapperInterface;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

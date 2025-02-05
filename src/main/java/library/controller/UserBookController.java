@@ -13,13 +13,13 @@ public class UserBookController {
 
     private final UserBookService userBookService;
 
-    @Operation(summary = "Sent book borrow request")
+    @Operation(summary = "Send book borrow request")
     @PostMapping("/borrow-request")
     public ResponseEntity<?> borrowRequest(@RequestParam Long bookId){
         return ResponseEntity.ok().body(userBookService.borrowRequest(bookId));
     }
 
-    @Operation(summary = "Sent book return request")
+    @Operation(summary = "Send book return request")
     @PostMapping("/return-request")
     public ResponseEntity<?> returnRequest(@RequestParam Long bookId){
         return ResponseEntity.ok().body(userBookService.returnRequest(bookId));

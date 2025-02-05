@@ -232,7 +232,7 @@ public class BookServiceImpl implements BookService {
                         .build();
                 bookGenreRepo.save(bookGenre);
                 Set<Long> userIds=bookGenreRepo.findAllIdsByGenreId(genre.getId());
-                String notificationMessage="New book of genre "+genre.getName()+" is available in the library";
+                String notificationMessage="A new book in the genre \""+genre.getName()+"\" is now available in the library";
                 userIds.parallelStream().forEach(userId->{
                     messagingTemplate.convertAndSendToUser(userId.toString(),"/messages",notificationMessage);
                 });

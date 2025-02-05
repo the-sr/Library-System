@@ -2,6 +2,7 @@ package library.services;
 
 import java.util.List;
 
+import library.dto.PasswordDto;
 import library.dto.UserDto;
 import library.dto.res.PagewiseRes;
 
@@ -17,5 +18,11 @@ public interface UserService {
     String deleteById(long id);
 
     UserDto updateById(UserDto req);
+
+    String forgotPassword(PasswordDto req);
+
+    PasswordDto validateOTP(PasswordDto req);
+
+    String changePassword(PasswordDto req);
 
 }
