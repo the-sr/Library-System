@@ -234,7 +234,7 @@ public class BookServiceImpl implements BookService {
                         .build();
                 bookGenreRepo.save(bookGenre);
                 Set<Long> userIds=preferredGenreRepo.findAllUserIdsByGenreId(genre.getId());
-                String notificationMessage="A new book in the genre \""+genre.getName()+"\" is now available in the library";
+                String notificationMessage="A new book of your preferred genre \""+genre.getName()+"\" is now available in the library";
                 userIds.parallelStream().forEach(userId->{
                     messagingTemplate.convertAndSendToUser(userId.toString(),"/messages",notificationMessage);
                 });
