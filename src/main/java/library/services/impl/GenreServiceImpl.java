@@ -40,4 +40,10 @@ public class GenreServiceImpl implements GenreService {
         return genreList.parallelStream().map(genreMapper::entityToDto).collect(Collectors.toList());
     }
 
+    @Override
+    public List<GenreDto> getAllGenres() {
+        List<Genre> genreList=genreRepo.findAll();
+        return genreList.parallelStream().map(genreMapper::entityToDto).collect(Collectors.toList());
+    }
+
 }

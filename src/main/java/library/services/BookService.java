@@ -3,7 +3,7 @@ package library.services;
 import library.dto.AuthorDto;
 import library.dto.BookDto;
 import library.dto.GenreDto;
-import library.dto.res.PagewiseRes;
+import library.dto.PageWiseResDto;
 
 import java.util.List;
 import java.util.Set;
@@ -21,7 +21,7 @@ public interface BookService {
 
     List<BookDto> getAllBooks();
 
-    PagewiseRes<BookDto> getAllBooks(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection);
+    PageWiseResDto<BookDto> getAllBooks(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection);
 
     String removeById(Long id);
 

@@ -4,8 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import library.config.jwt.JwtUtil;
 import library.dto.UserDto;
-import library.dto.req.LoginReq;
-import library.dto.res.LoginRes;
+import library.dto.LoginDto;
 import library.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,13 +37,13 @@ public class PublicController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<?> login(@RequestBody LoginReq req) {
+    public ResponseEntity<?> login(@RequestBody LoginDto req) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final UserDetails userDetails = userDetailsService.loadUserByUsername(req.getUsername());
         final String token = jwtUtil.generateToken(userDetails);
-        return ResponseEntity.ok().body(new LoginRes(token));
+        return ResponseEntity.ok().body(LoginDto.builder().token(token).build());
     }
 
 }

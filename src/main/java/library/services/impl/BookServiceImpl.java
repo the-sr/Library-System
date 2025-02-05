@@ -3,7 +3,7 @@ package library.services.impl;
 import library.dto.AuthorDto;
 import library.dto.BookDto;
 import library.dto.GenreDto;
-import library.dto.res.PagewiseRes;
+import library.dto.PageWiseResDto;
 import library.exception.CustomException;
 import library.models.Book;
 import library.models.BookAuthor;
@@ -11,6 +11,7 @@ import library.models.BookGenre;
 import library.repository.BookAuthorRepo;
 import library.repository.BookGenreRepo;
 import library.repository.BookRepo;
+import library.repository.PreferredGenreRepo;
 import library.services.AuthorService;
 import library.services.BookService;
 import library.services.GenreService;
@@ -44,6 +45,7 @@ public class BookServiceImpl implements BookService {
     private final BookGenreRepo bookGenreRepo;
     private final AuthorMapper authorMapper;
     private final GenreMapper genreMapper;
+    private final PreferredGenreRepo preferredGenreRepo;
     private final SimpMessagingTemplate messagingTemplate;
 
     @Override
@@ -130,7 +132,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public PagewiseRes<BookDto> getAllBooks(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection) {
+    public PageWiseResDto<BookDto> getAllBooks(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection) {
         Sort sort = null;
         if (sortDirection.equalsIgnoreCase("asc"))
             sort = Sort.by(sortBy).ascending();
@@ -145,14 +147,14 @@ public class BookServiceImpl implements BookService {
             bookDto.setGenre(getGenreDtoList(bookDto));
             bookDtoList.add(bookDto);
         });
-        PagewiseRes<BookDto> pagewiseRes = new PagewiseRes<>();
-        pagewiseRes.setRes(bookDtoList);
-        pagewiseRes.setTotalPages(books.getTotalPages());
-        pagewiseRes.setTotalElements(books.getTotalElements());
-        pagewiseRes.setCurrentPage(books.getNumber());
-        pagewiseRes.setPageSize(books.getSize());
-        pagewiseRes.setLast(books.isLast());
-        return pagewiseRes;
+        PageWiseResDto<BookDto> pageWiseResDto = new PageWiseResDto<>();
+        pageWiseResDto.setRes(bookDtoList);
+        pageWiseResDto.setTotalPages(books.getTotalPages());
+        pageWiseResDto.setTotalElements(books.getTotalElements());
+        pageWiseResDto.setCurrentPage(books.getNumber());
+        pageWiseResDto.setPageSize(books.getSize());
+        pageWiseResDto.setLast(books.isLast());
+        return pageWiseResDto;
     }
 
     @Transactional
@@ -231,7 +233,7 @@ public class BookServiceImpl implements BookService {
                         .genreId(genre.getId())
                         .build();
                 bookGenreRepo.save(bookGenre);
-                Set<Long> userIds=bookGenreRepo.findAllIdsByGenreId(genre.getId());
+                Set<Long> userIds=preferredGenreRepo.findAllUserIdsByGenreId(genre.getId());
                 String notificationMessage="A new book in the genre \""+genre.getName()+"\" is now available in the library";
                 userIds.parallelStream().forEach(userId->{
                     messagingTemplate.convertAndSendToUser(userId.toString(),"/messages",notificationMessage);

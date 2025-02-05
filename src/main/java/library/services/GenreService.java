@@ -9,4 +9,5 @@ public interface GenreService {
     GenreDto add(GenreDto req);
     GenreDto getById(Long id);
     List<GenreDto> getByGenreName(String genreName);
+    List<GenreDto> getAllGenres();
 }

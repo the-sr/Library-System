@@ -1,4 +1,4 @@
-package library.dto.res;
+package library.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class PagewiseRes<T> {
+public class PageWiseResDto<T> {
     private List<T> res;
     private int totalPages;
     private long totalElements;

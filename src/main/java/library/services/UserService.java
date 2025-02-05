@@ -4,7 +4,7 @@ import java.util.List;
 
 import library.dto.PasswordDto;
 import library.dto.UserDto;
-import library.dto.res.PagewiseRes;
+import library.dto.PageWiseResDto;
 
 public interface UserService {
     UserDto save(UserDto req);
@@ -13,7 +13,7 @@ public interface UserService {
 
     List<UserDto> getAllUsers(Boolean status);
 
-    PagewiseRes<UserDto> getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection, Boolean status);
+    PageWiseResDto<UserDto> getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection, Boolean status);
 
     String deleteById(long id);
 

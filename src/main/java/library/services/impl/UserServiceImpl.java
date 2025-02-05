@@ -13,7 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import library.dto.UserDto;
-import library.dto.res.PagewiseRes;
+import library.dto.PageWiseResDto;
 import library.exception.CustomException;
 import library.models.User;
 import library.repository.UserRepo;
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PagewiseRes<UserDto> getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection, Boolean status) {
+    public PageWiseResDto<UserDto> getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection, Boolean status) {
         Sort sort = null;
         if (sortDirection.equalsIgnoreCase("asc"))
             sort = Sort.by(sortBy).ascending();
@@ -79,14 +79,14 @@ public class UserServiceImpl implements UserService {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<User> users = userRepo.findAllPagewiseByIsActive(pageable, status);
         List<UserDto> res = users.stream().map(userMapper::entityToDto).collect(Collectors.toList());
-        PagewiseRes<UserDto> pagewiseRes = new PagewiseRes<>();
-        pagewiseRes.setRes(res);
-        pagewiseRes.setTotalPages(users.getTotalPages());
-        pagewiseRes.setTotalElements(users.getTotalElements());
-        pagewiseRes.setCurrentPage(users.getNumber());
-        pagewiseRes.setPageSize(users.getSize());
-        pagewiseRes.setLast(users.isLast());
-        return pagewiseRes;
+        PageWiseResDto<UserDto> pageWiseResDto = new PageWiseResDto<>();
+        pageWiseResDto.setRes(res);
+        pageWiseResDto.setTotalPages(users.getTotalPages());
+        pageWiseResDto.setTotalElements(users.getTotalElements());
+        pageWiseResDto.setCurrentPage(users.getNumber());
+        pageWiseResDto.setPageSize(users.getSize());
+        pageWiseResDto.setLast(users.isLast());
+        return pageWiseResDto;
     }
 
     @Override
