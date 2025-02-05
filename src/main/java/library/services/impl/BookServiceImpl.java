@@ -8,10 +8,7 @@ import library.exception.CustomException;
 import library.models.Book;
 import library.models.BookAuthor;
 import library.models.BookGenre;
-import library.repository.BookAuthorRepo;
-import library.repository.BookGenreRepo;
-import library.repository.BookRepo;
-import library.repository.PreferredGenreRepo;
+import library.repository.*;
 import library.services.AuthorService;
 import library.services.BookService;
 import library.services.GenreService;
@@ -47,6 +44,7 @@ public class BookServiceImpl implements BookService {
     private final GenreMapper genreMapper;
     private final PreferredGenreRepo preferredGenreRepo;
     private final SimpMessagingTemplate messagingTemplate;
+    private final PreferredAuthorRepo preferredAuthorRepo;
 
     @Override
     public String add(BookDto req) {
@@ -220,6 +218,11 @@ public class BookServiceImpl implements BookService {
                         .authorId(author.getId())
                         .build();
                 bookAuthorRepo.save(bookAuthor);
+                Set<Long> userIds=preferredAuthorRepo.findAllUserIdsByAuthorId(author.getId());
+                String notificationMessage="A new book of your preferred author \""+author.getFirstName()+" "+author.getLastName()+"\" is now available in the library";
+                userIds.parallelStream().forEach(userId->{
+                    messagingTemplate.convertAndSendToUser(userId.toString(),"/messages",notificationMessage);
+                });
             });
         }
     }

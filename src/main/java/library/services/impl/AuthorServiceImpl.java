@@ -40,5 +40,11 @@ public class AuthorServiceImpl implements AuthorService {
         return authorList.parallelStream().map(authorMapper::entityToDto).collect(Collectors.toList());
     }
 
+    @Override
+    public List<AuthorDto> getAllAuthors() {
+        List<Author> authorList=authorRepo.findAll();
+        return authorList.parallelStream().map(authorMapper::entityToDto).collect(Collectors.toList());
+    }
+
 
 }
