@@ -3,6 +3,7 @@ package library.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import library.config.jwt.JwtUtil;
+import library.dto.PasswordDto;
 import library.dto.UserDto;
 import library.dto.LoginDto;
 import library.services.UserService;
@@ -15,10 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/public")
@@ -44,6 +42,21 @@ public class PublicController {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(req.getUsername());
         final String token = jwtUtil.generateToken(userDetails);
         return ResponseEntity.ok().body(LoginDto.builder().token(token).build());
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody PasswordDto req){
+        return ResponseEntity.ok().body(userService.forgotPassword(req));
+    }
+
+    @PostMapping("/validate-otp")
+    public ResponseEntity<?> validateOTP(@RequestBody PasswordDto req){
+        return ResponseEntity.ok().body(userService.validateOTP(req));
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody PasswordDto req) {
+        return ResponseEntity.ok().body(userService.changePassword(req));
     }
 
 }

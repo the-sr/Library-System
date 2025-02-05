@@ -3,6 +3,7 @@ package library.services.impl;
 import library.dto.PasswordDto;
 import library.services.AddressService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
@@ -108,6 +110,8 @@ public class UserServiceImpl implements UserService {
         if (userRepo.existsByEmail(req.getEmail())) {
             int otp = (int) (Math.pow(10, Integer.parseInt(optLength) - 1) + Math.random() * 9 * Math.pow(10, Integer.parseInt(optLength) - 1));
             optMap.put(req.getEmail(), otp);
+            String body="Your one-time password (OTP) for resetting your password is"+otp+". This code will expire in 5 minutes. Please enter it promptly to complete your request.";
+            emailService.sendMail(req.getEmail(), "Forgot Password Request",body);
         }
         return "Please check you email for OPT to change password";
     }
@@ -119,7 +123,7 @@ public class UserServiceImpl implements UserService {
                 String token="just_a_random_token";
                 tokenMap.put(req.getEmail(),token);
                 return PasswordDto.builder().token(token).build();
-            } else throw new CustomException("Invalid request", HttpStatus.BAD_REQUEST);
+            } else throw new CustomException("Invalid OTP", HttpStatus.BAD_REQUEST);
         } else throw new CustomException("Invalid request", HttpStatus.BAD_REQUEST);
     }
 
@@ -153,6 +157,16 @@ public class UserServiceImpl implements UserService {
         userRepo.save(user);
         emailService.sendMail(user.getEmail(), "Account Deletion", "Your account will be deleted within a month. ");
         return "Your account will be deleted within a month";
+    }
+
+    public static void clearOTPMap() {
+        optMap.clear();
+        log.info("OTP map cleared");
+    }
+
+    public static void clearTokenMap(){
+        tokenMap.clear();
+        log.info("Token map cleared");
     }
 
 
