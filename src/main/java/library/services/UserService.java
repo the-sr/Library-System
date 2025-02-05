@@ -23,6 +23,8 @@ public interface UserService {
 
     PasswordDto validateOTP(PasswordDto req);
 
-    String changePassword(PasswordDto req);
+    String resetPassword(PasswordDto req);
+
+    String updatePassword(PasswordDto req);
 
 }

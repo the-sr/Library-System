@@ -54,9 +54,9 @@ public class PublicController {
         return ResponseEntity.ok().body(userService.validateOTP(req));
     }
 
-    @PutMapping("/change-password")
-    public ResponseEntity<?> changePassword(@RequestBody PasswordDto req) {
-        return ResponseEntity.ok().body(userService.changePassword(req));
+    @PutMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody PasswordDto req) {
+        return ResponseEntity.ok().body(userService.resetPassword(req));
     }
 
 }

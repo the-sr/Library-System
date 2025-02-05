@@ -74,10 +74,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public PageWiseResDto<UserDto> getAllUsers(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection, Boolean status) {
         Sort sort = null;
-        if (sortDirection.equalsIgnoreCase("asc"))
-            sort = Sort.by(sortBy).ascending();
-        else if (sortDirection.equalsIgnoreCase("desc"))
-            sort = Sort.by(sortBy).descending();
+        if (sortDirection.equalsIgnoreCase("asc")) sort = Sort.by(sortBy).ascending();
+        else if (sortDirection.equalsIgnoreCase("desc")) sort = Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<User> users = userRepo.findAllPagewiseByIsActive(pageable, status);
         List<UserDto> res = users.stream().map(userMapper::entityToDto).collect(Collectors.toList());
@@ -110,8 +108,8 @@ public class UserServiceImpl implements UserService {
         if (userRepo.existsByEmail(req.getEmail())) {
             int otp = (int) (Math.pow(10, Integer.parseInt(optLength) - 1) + Math.random() * 9 * Math.pow(10, Integer.parseInt(optLength) - 1));
             optMap.put(req.getEmail(), otp);
-            String body="Your one-time password (OTP) for resetting your password is"+otp+". This code will expire in 5 minutes. Please enter it promptly to complete your request.";
-            emailService.sendMail(req.getEmail(), "Forgot Password Request",body);
+            String body = "Your one-time password (OTP) for resetting your password is <b>" + otp + "</b>. This code will expire in 5 minutes. Please enter it promptly to complete your request.";
+            emailService.sendMail(req.getEmail(), "Forgot Password Request", body);
         }
         return "Please check you email for OPT to change password";
     }
@@ -120,38 +118,40 @@ public class UserServiceImpl implements UserService {
     public PasswordDto validateOTP(PasswordDto req) {
         if (optMap.containsKey(req.getEmail())) {
             if (optMap.get(req.getEmail()).equals(req.getOtp())) {
-                String token="just_a_random_token";
-                tokenMap.put(req.getEmail(),token);
+                String token = "just_a_random_token";
+                tokenMap.put(req.getEmail(), token);
                 return PasswordDto.builder().token(token).build();
             } else throw new CustomException("Invalid OTP", HttpStatus.BAD_REQUEST);
         } else throw new CustomException("Invalid request", HttpStatus.BAD_REQUEST);
     }
 
     @Override
-    public String changePassword(PasswordDto req) {
-        if (req.getOldPassword() != null && !req.getOldPassword().isEmpty()) {
-            User user=userRepo.findByUsername(req.getEmail()).orElseThrow(()->new CustomException("User not found",HttpStatus.NOT_FOUND));
-            if(user.getPassword().equals(new BCryptPasswordEncoder().encode(req.getOldPassword()))){
+    public String resetPassword(PasswordDto req) {
+        if (tokenMap.containsKey(req.getEmail())) {
+            if (tokenMap.get(req.getEmail()).equals(req.getToken())) {
+                User user = userRepo.findByUsername(req.getEmail()).orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
                 user.setPassword(new BCryptPasswordEncoder().encode(req.getNewPassword()));
                 userRepo.save(user);
                 return "Password changed successfully";
-            }else throw new CustomException("Incorrect old password", HttpStatus.BAD_REQUEST);
-        } else {
-            if (tokenMap.containsKey(req.getEmail())) {
-                if (tokenMap.get(req.getEmail()).equals(req.getToken())) {
-                    User user=userRepo.findByUsername(req.getEmail()).orElseThrow(()->new CustomException("User not found",HttpStatus.NOT_FOUND));
-                    user.setPassword(new BCryptPasswordEncoder().encode(req.getNewPassword()));
-                    userRepo.save(user);
-                    return "Password changed successfully";
-                } else throw new CustomException("Invalid request", HttpStatus.BAD_REQUEST);
             } else throw new CustomException("Invalid request", HttpStatus.BAD_REQUEST);
-        }
+        } else throw new CustomException("Invalid request", HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    public String updatePassword(PasswordDto req) {
+        if (req.getOldPassword() != null && !req.getOldPassword().isEmpty()) {
+            User user = userRepo.findByUsername(req.getEmail()).orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
+            if (new BCryptPasswordEncoder().matches(req.getOldPassword(), user.getPassword())) {
+                user.setPassword(new BCryptPasswordEncoder().encode(req.getNewPassword()));
+                userRepo.save(user);
+                return "Password changed successfully";
+            } else throw new CustomException("Incorrect old password", HttpStatus.BAD_REQUEST);
+        }else throw new CustomException("Invalid Request",HttpStatus.BAD_REQUEST);
     }
 
     @Override
     public String deleteById(long id) {
-        User user = userRepo.findById(id)
-                .orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
+        User user = userRepo.findById(id).orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
         user.setIsActive(false);
         user.setUpdatedDate(LocalDate.now());
         userRepo.save(user);
@@ -164,10 +164,8 @@ public class UserServiceImpl implements UserService {
         log.info("OTP map cleared");
     }
 
-    public static void clearTokenMap(){
+    public static void clearTokenMap() {
         tokenMap.clear();
         log.info("Token map cleared");
     }
-
-
 }

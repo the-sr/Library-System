@@ -2,6 +2,7 @@ package library.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import library.dto.PasswordDto;
 import library.dto.UserDto;
 import library.services.UserService;
 import library.utils.AppConstants;
@@ -44,6 +45,12 @@ public class UserRestController {
     @PutMapping("/user")
     public ResponseEntity<?> updateUser(@Valid @RequestBody UserDto req) {
         return ResponseEntity.ok().body(userService.updateById(req));
+    }
+
+    @Operation(summary = "Update password")
+    @PutMapping("/update-password")
+    public ResponseEntity<?> updatePassword(@RequestBody PasswordDto req) {
+        return ResponseEntity.ok().body(userService.updatePassword(req));
     }
 
     @Operation(summary = "Delete user by ID")
