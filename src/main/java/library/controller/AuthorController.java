@@ -1,7 +1,6 @@
 package library.controller;
 
 import library.services.AuthorService;
-import library.services.GenreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

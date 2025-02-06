@@ -1,9 +1,7 @@
 package library.controller;
 
 import library.dto.AuthorDto;
-import library.dto.GenreDto;
 import library.services.PreferredAuthorService;
-import library.services.PreferredGenreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
