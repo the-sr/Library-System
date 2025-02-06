@@ -13,7 +13,6 @@ import library.repository.UserRepo;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,13 +22,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepo.findByUsername(username);
-        if (user.isEmpty())
-            throw new UsernameNotFoundException("User not found");
-        User userDetails = user.get();
+        User user = userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         List<GrantedAuthority> authorities = Collections
-                .singletonList(new SimpleGrantedAuthority(userDetails.getRole().name()));
-        return new AuthenticatedUser(userDetails.getId(), userDetails.getEmail(), userDetails.getPassword(),
+                .singletonList(new SimpleGrantedAuthority(user.getRole().name()));
+        return new AuthenticatedUser(user.getId(), user.getEmail(), user.getPassword(),
                 authorities);
     }
 }
