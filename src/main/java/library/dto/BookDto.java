@@ -39,4 +39,6 @@ public class BookDto {
 
     @NotNull(message = "At least 1 genre is required")
     private List<GenreDto> genre;
+
+    private List<ReviewDto> review;
 }

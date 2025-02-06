@@ -1,13 +1,13 @@
 package library.services.impl;
 
-import library.dto.ReviewsDto;
+import library.dto.ReviewDto;
 import library.exception.CustomException;
 import library.models.Book;
-import library.models.Reviews;
+import library.models.Review;
 import library.repository.BookRepo;
 import library.repository.ReviewsRepo;
-import library.services.ReviewsService;
-import library.services.mappers.ReviewsMapper;
+import library.services.ReviewService;
+import library.services.mappers.ReviewMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,55 +20,55 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 
-public class ReviewsServiceImpl implements ReviewsService {
+public class ReviewServiceImpl implements ReviewService {
 
-    private final ReviewsMapper reviewsMapper;
+    private final ReviewMapper reviewMapper;
     private final ReviewsRepo reviewsRepo;
     private final BookRepo bookRepo;
 
     @Override
-    public ReviewsDto addReview(ReviewsDto req) {
-        Reviews reviews = reviewsMapper.dtoToEntity(req);
-        reviews.setCreatedDate(LocalDateTime.now());
-        reviews=reviewsRepo.save(reviews);
+    public ReviewDto addReview(ReviewDto req) {
+        Review review = reviewMapper.dtoToEntity(req);
+        review.setCreatedDate(LocalDateTime.now());
+        review =reviewsRepo.save(review);
         Float averageRatings= reviewsRepo.getAverageRating(req.getBookId());
         Book book=bookRepo.findById(req.getBookId()).orElseThrow(()->new CustomException("Book not found", HttpStatus.NOT_FOUND));
         book.setAverageRating(averageRatings);
         bookRepo.save(book);
-        return reviewsMapper.entityToDto(reviews);
+        return reviewMapper.entityToDto(review);
     }
 
     @Override
-    public ReviewsDto addReply(ReviewsDto req) {
+    public ReviewDto addReply(ReviewDto req) {
         return null;
     }
 
     @Override
-    public List<ReviewsDto> getReviewsByBookId(long bookId) {
-        List<Reviews> reviewsList=reviewsRepo.findAllByBookId(bookId);
-        List<ReviewsDto> res=new ArrayList<>();
-        reviewsList.forEach(reviews -> res.add(reviewsMapper.entityToDto(reviews)));
+    public List<ReviewDto> getReviewsByBookId(long bookId) {
+        List<Review> reviewList =reviewsRepo.findAllByBookId(bookId);
+        List<ReviewDto> res=new ArrayList<>();
+        reviewList.forEach(reviews -> res.add(reviewMapper.entityToDto(reviews)));
         return res;
 //        return reviewsList.stream().map(reviewsMapper::entityToDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<ReviewsDto> getAllReviewsByUserId(long userId) {
-        List<Reviews> reviewsList=reviewsRepo.findAllByUserId(userId);
-        return reviewsList.stream().map(reviewsMapper::entityToDto).collect(Collectors.toList());
+    public List<ReviewDto> getAllReviewsByUserId(long userId) {
+        List<Review> reviewList =reviewsRepo.findAllByUserId(userId);
+        return reviewList.stream().map(reviewMapper::entityToDto).collect(Collectors.toList());
     }
 
     @Override
-    public ReviewsDto updateReview(ReviewsDto req) {
-        Reviews reviews=reviewsRepo.findById(req.getId()).orElseThrow(()->new CustomException("Review not found", HttpStatus.NOT_FOUND));
-        reviews.setComment(req.getComment());
-        reviews.setRating(req.getRating());
-        reviews=reviewsRepo.save(reviews);
+    public ReviewDto updateReview(ReviewDto req) {
+        Review review =reviewsRepo.findById(req.getId()).orElseThrow(()->new CustomException("Review not found", HttpStatus.NOT_FOUND));
+        review.setComment(req.getComment());
+        review.setRating(req.getRating());
+        review =reviewsRepo.save(review);
         Float averageRatings= reviewsRepo.getAverageRating(req.getBookId());
         Book book=bookRepo.findById(req.getBookId()).orElseThrow(()->new CustomException("Book not found", HttpStatus.NOT_FOUND));
         book.setAverageRating(averageRatings);
         bookRepo.save(book);
-        return reviewsMapper.entityToDto(reviews);
+        return reviewMapper.entityToDto(review);
     }
 
     @Override

@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name="reveiws")
-public class Reviews {
+@Table(name="reveiw")
+public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,5 +55,5 @@ public class Reviews {
     @Setter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviews_id",referencedColumnName = "id",insertable = false,updatable = false)
-    private Reviews reviews;
+    private Review review;
 }

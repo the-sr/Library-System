@@ -41,7 +41,7 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private List<BookAuthor> bookAuthor;
 
-    @OneToMany(mappedBy = "book")
-    private List<Reviews> reviews;
+    @OneToMany(mappedBy = "book", fetch = FetchType.EAGER)
+    private List<Review> reviews;
 
 }

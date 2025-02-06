@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReviewsDto {
+public class ReviewDto {
 
     private Long id;
     private String comment;
@@ -21,6 +21,6 @@ public class ReviewsDto {
     private Long reviewsId;
     private UserDto user;
     private BookDto book;
-    private ReviewsDto reviews;
+    private ReviewDto reviews;
 
 }
