@@ -21,19 +21,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "first_name", nullable = false)
+    @Column(name = "first_name")
     private String firstName;
 
     @Column(name = "middle_name")
     private String middleName;
 
-    @Column(name = "last_name", nullable = false)
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -49,14 +49,14 @@ public class User {
     @Column(name = "updated_date")
     private LocalDate updatedDate;
 
-    @OneToMany(mappedBy = "user")
-    private List<Address> address;
+    @Column(name = "borrowed_book_count")
+    private Integer borrowedBookCount;
 
     @Column(name = "is_active", columnDefinition = "boolean default false")
     private Boolean isActive;
 
-    @Column(name = "borrowed_book_count")
-    private Integer borrowedBookCount;
+    @OneToMany(mappedBy = "user")
+    private List<Address> address;
 
     @PrePersist
     private void onCreate() {

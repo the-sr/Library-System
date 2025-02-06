@@ -42,9 +42,9 @@ public class UserDto {
 
     private LocalDate updatedDate;
 
-    private List<AddressDto> address;
+    private Integer borrowedBookCount;
 
     private Boolean isActive;
 
-    private Integer borrowedBookCount;
+    private List<AddressDto> address;
 }

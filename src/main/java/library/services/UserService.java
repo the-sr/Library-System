@@ -7,7 +7,8 @@ import library.dto.UserDto;
 import library.dto.PageWiseResDto;
 
 public interface UserService {
-    UserDto save(UserDto req);
+
+    String save(UserDto req);
 
     UserDto findById(long id);
 

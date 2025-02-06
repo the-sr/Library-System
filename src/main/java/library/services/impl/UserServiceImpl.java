@@ -43,11 +43,21 @@ public class UserServiceImpl implements UserService {
     private static Map<String, String> tokenMap = new HashMap<>();
 
     @Override
-    public UserDto save(UserDto req) {
+    public String save(UserDto req) {
         if (userRepo.existsByEmail(req.getEmail()))
             throw new CustomException("Email already registered", HttpStatus.BAD_REQUEST);
         if (!req.getPassword().equals(req.getConfirmPassword()))
             throw new CustomException("Confirm Password and Password must be same", HttpStatus.BAD_REQUEST);
+        new Thread(()->{
+            int otp = (int) (Math.pow(10, Integer.parseInt(optLength) - 1) + Math.random() * 9 * Math.pow(10, Integer.parseInt(optLength) - 1));
+            optMap.put(req.getEmail(), otp);
+            String body="<b>Dear "+req.getFirstName()+",</b></br>" +
+                    "</br><b>Hello and Welcome !</b></br></br>" +
+                    "</br>To complete your account verification, please use the One-Time Password (OTP) below:</br></br><b>Your OTP: "+otp+ "</b></br>" +
+                    "</br>This OTP is valid for <b>5 minutes</b>. Please do not share it with anyone for security reasons.</br>" +
+                    "</br>If you didn't request this, please ignore this email.";
+            emailService.sendMail(req.getEmail(), "Verify your Account", body);
+        }).start();
         User user = userRepo.save(userMapper.dtoToEntity(req));
         if (req.getAddress() != null) {
             req.getAddress().parallelStream().forEach(address -> {
@@ -55,8 +65,7 @@ public class UserServiceImpl implements UserService {
                 addressService.saveAddress(address);
             });
         }
-        emailService.sendMail(user.getEmail(), "Account Registration", "Your account has been successfully registered.");
-        return userMapper.entityToDto(user);
+        return "Please check you email for OPT to verify your account and proceed further";
     }
 
     @Override

@@ -67,7 +67,7 @@ public class EmailService {
         emailConfigRepo.save(emailConfig);
     }
 
-    public boolean sendMail(String receiver, String subject, String body) {
+    public synchronized boolean sendMail(String receiver, String subject, String body) {
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
