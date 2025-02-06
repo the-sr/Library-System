@@ -33,11 +33,15 @@ public class Book {
     private String publisher;
 
     @Column(name = "book_count")
-    private int bookCount;
+    private Integer bookCount;
+
+    @Column(name = "average_rating")
+    private Float averageRating;
 
     @OneToMany(mappedBy = "book")
     private List<BookAuthor> bookAuthor;
 
-
+    @OneToMany(mappedBy = "book")
+    private List<Reviews> reviews;
 
 }

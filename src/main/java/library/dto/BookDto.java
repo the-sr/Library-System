@@ -1,5 +1,6 @@
 package library.dto;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -27,7 +28,11 @@ public class BookDto {
     private String publisher;
 
     @Min(value = 1, message = "Minimum Number of book is ONE")
-    private int bookCount;
+    private Integer bookCount;
+
+    @Min(0)
+    @Max(5)
+    private Float averageRating;
 
     @NotNull(message = "Author Details is required")
     private List<AuthorDto> authors;
