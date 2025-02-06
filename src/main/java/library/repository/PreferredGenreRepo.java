@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -14,4 +15,8 @@ public interface PreferredGenreRepo extends JpaRepository<PreferredGenre, Long> 
             " from preferred_genre pg " +
             " where pg.genre_id = :genreId ",nativeQuery = true)
     Set<Long> findAllUserIdsByGenreId(Long genreId);
+
+    List<PreferredGenre> findAllByUserId(Long userId);
+
+    void deleteAllByUserIdAndGenreId(Long userId, Long genreId);
 }

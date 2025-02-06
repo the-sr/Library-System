@@ -4,6 +4,7 @@ import library.services.GenreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,5 +18,10 @@ public class GenreController {
     @GetMapping("/genres")
     public ResponseEntity<?> getAllGenres() {
         return ResponseEntity.ok(genreService.getAllGenres());
+    }
+
+    @GetMapping("/genre/{id}")
+    public ResponseEntity<?> getGenreById(@PathVariable long id) {
+        return ResponseEntity.ok(genreService.getById(id));
     }
 }

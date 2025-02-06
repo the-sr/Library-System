@@ -4,10 +4,8 @@ import library.dto.GenreDto;
 import library.services.PreferredGenreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,6 +19,17 @@ public class PreferredGenreController {
     @PostMapping("/add-preferred-genre")
     public ResponseEntity<?> addPreferredGenre(@RequestBody List<GenreDto> req) {
         return ResponseEntity.ok(preferredGenreService.addPreferredGenre(req));
+    }
+
+    @GetMapping("/preferred-genre")
+    public ResponseEntity<?> getPreferredGenres(@RequestParam long userId) {
+        return ResponseEntity.ok(preferredGenreService.getPreferredGenres(userId));
+    }
+
+    @PreAuthorize("hasAuthority('MEMBER')")
+    @GetMapping("/remove-preferred-genres")
+    public ResponseEntity<?> removePreferredGenres(@RequestParam long genreId) {
+        return ResponseEntity.ok().body(preferredGenreService.removePreferredGenre(genreId));
     }
 
 }

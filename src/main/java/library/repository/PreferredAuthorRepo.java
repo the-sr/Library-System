@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -14,4 +15,8 @@ public interface PreferredAuthorRepo extends JpaRepository<PreferredAuthor, Long
             " from preferred_author pa " +
             " where pa.author_id = :authorId ",nativeQuery = true)
     Set<Long> findAllUserIdsByAuthorId(Long authorId);
+
+    List<PreferredAuthor> findAllByUserId(Long userId);
+
+    void deleteByUserIdAndAuthorId(Long userId, Long authorId);
 }

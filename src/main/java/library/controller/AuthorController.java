@@ -3,9 +3,7 @@ package library.controller;
 import library.services.AuthorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -17,5 +15,10 @@ public class AuthorController {
     @GetMapping("/authors")
     public ResponseEntity<?> getAllAuthors() {
         return ResponseEntity.ok(authorService.getAllAuthors());
+    }
+
+    @GetMapping("/author/{id}")
+    public ResponseEntity<?> getAuthorById(@PathVariable long id) {
+        return ResponseEntity.ok(authorService.getById(id));
     }
 }
